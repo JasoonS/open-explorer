@@ -75,7 +75,11 @@ let make = () => {
   <div
     className="flex flex-col items-center justify-center h-screen m-0 p-0 text-primary overflow-y-hidden">
     <h1 className="text-4xl font-bold my-3">
-      {Time.useTypedCharactersString(~delay=35, "> Select a data source and network")->React.string}
+      {Time.useRotatingCharacterAnimation(~delay=160, ">?#>?ᗧ*&$⍨])⎌#]")->React.string}
+      {Time.useTypedCharactersString(
+        ~delay=35,
+        ` / select a data source and network`,
+      )->React.string}
     </h1>
     <div className="flex flex-col sm:flex-row sm:space-x-4 w-full justify-center my-4">
       <Buttons
@@ -107,14 +111,14 @@ let make = () => {
           type_="text"
           value=rpcUrl
           onChange={e => setRpcUrl(JsxEventU.Form.target(e)["value"])}
-          placeholder="Enter custom RPC URL"
+          placeholder="enter custom RPC URL"
         />
         <input
           className="mt-1 block px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm flex-1"
           type_="numeric"
           value=selectedChain
           onChange={e => setSelectedChain(JsxEventU.Form.target(e)["value"])}
-          placeholder="Enter ChainId"
+          placeholder="enter ChainId"
         />
         <button
           className="ml-4 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
@@ -137,7 +141,7 @@ let make = () => {
               ->Option.flatMap(chainName => Js.Dict.get(supportedChains, chainName))
               ->Option.map(chainId => RescriptReactRouter.push(`/${chainId->Int.toString}`))
           }}>
-          <option value=""> {"Select a chain"->React.string} </option>
+          <option value=""> {"/ select a chain"->React.string} </option>
           {supportedChains
           ->Js.Dict.keys
           ->Array.map(name => <option key={name} value={name}> {React.string(name)} </option>)
