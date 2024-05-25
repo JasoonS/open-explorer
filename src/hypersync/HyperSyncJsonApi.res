@@ -366,7 +366,6 @@ let executeHyperSyncQuery = (~serverUrl, ~postQueryBody: QueryTypes.postQueryBod
     ~method=#POST,
     ~bodyAndSchema=(postQueryBody, QueryTypes.postQueryBodySchema),
     ~responseSchema=ResponseTypes.queryResponseSchema,
-    (),
   )
 }
 
@@ -378,7 +377,6 @@ let getArchiveHeight = {
       ~endpoint=serverUrl ++ "/height",
       ~method=#GET,
       ~responseSchema,
-      (),
     )
   }
 }
