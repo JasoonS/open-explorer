@@ -17,23 +17,10 @@ module BlockRow = {
   }
 }
 
-exception UnsupportedChain(int)
-let getChainName = (~chainId) =>
-  switch chainId {
-  | 1 => "eth"
-  | 137 => "polygon"
-  | chainId => UnsupportedChain(chainId)->raise
-  }
-
-let getServerUrl = (~chainId) => {
-  let name = getChainName(~chainId)
-  `https://${name}.hypersync.xyz`
-}
-
 module Blocks = {
   @react.component
-  let make = (~serverUrl, ~chainHeight) => {
-    let blocks = HyperSyncHooks.useBlocks(~serverUrl, ~chainHeight)
+  let make = (~chainId, ~chainHeight) => {
+    let blocks = HyperSyncHooks.useBlocks(~chainId, ~chainHeight)
 
     <table className="text-white">
       <tr>
@@ -56,12 +43,11 @@ module Blocks = {
 
 @react.component
 let make = (~chainId) => {
-  let serverUrl = getServerUrl(~chainId)
-  let chainHeight = HyperSyncHooks.useChainHeight(~serverUrl)
+  let chainHeight = HyperSyncHooks.useChainHeight(~chainId)
   <div>
     {"Blocks"->React.string}
     {switch chainHeight {
-    | Data(chainHeight) => <Blocks serverUrl chainHeight />
+    | Data(chainHeight) => <Blocks chainId chainHeight />
     | Loading => "loading..."->React.string
     | Err(_exn) => "Error"->React.string
     }}

@@ -1,9 +1,12 @@
 type response<'a> = Loading | Err(exn) | Data('a)
 
-let useChainHeight = (~serverUrl) => {
+let getServerUrl = (~chainId) => `https://${chainId->Int.toString}.hypersync.xyz`
+
+let useChainHeight = (~chainId) => {
   let (height, setHeight) = React.useState(_ => Loading)
 
   React.useEffect1(() => {
+    let serverUrl = getServerUrl(~chainId)
     setHeight(_ => Loading)
     let pollHeight = () =>
       HyperSyncJsonApi.getArchiveHeight(~serverUrl)
@@ -43,15 +46,16 @@ let useChainHeight = (~serverUrl) => {
         intervalId->clearInterval
       },
     )
-  }, [serverUrl])
+  }, [chainId])
 
   height
 }
 
-let useBlocks = (~serverUrl, ~chainHeight, ~pageSize=20, ~pageIndex=0) => {
+let useBlocks = (~chainId, ~chainHeight, ~pageSize=20, ~pageIndex=0) => {
   let (blocks, setBlocks) = React.useState(_ => Loading)
 
   React.useEffect3(() => {
+    let serverUrl = getServerUrl(~chainId)
     let toBlock = chainHeight - pageSize * pageIndex
     let fromBlock = toBlock - pageSize + 1
     Queries.getBlocks(~serverUrl, ~fromBlock, ~toBlock)
@@ -73,7 +77,7 @@ let useBlocks = (~serverUrl, ~chainHeight, ~pageSize=20, ~pageIndex=0) => {
     ->ignore
 
     None
-  }, (serverUrl, chainHeight, pageSize))
+  }, (chainId, chainHeight, pageSize))
 
   blocks
 }
