@@ -79,6 +79,7 @@ function ChainSelect(props) {
         return "HyperSync";
       });
   var setSelectedDataSource = match[1];
+  var selectedDataSource = match[0];
   var match$1 = React.useState(function () {
         return "";
       });
@@ -89,14 +90,10 @@ function ChainSelect(props) {
       });
   var setRpcUrl = match$2[1];
   var tmp;
-  switch (match[0]) {
+  switch (selectedDataSource) {
     case "Rpc" :
         tmp = JsxRuntime.jsxs("div", {
               children: [
-                JsxRuntime.jsx("label", {
-                      children: "Enter RPC URL",
-                      className: "block text-sm font-medium text-gray-700"
-                    }),
                 JsxRuntime.jsx("input", {
                       className: "mt-1 block px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm flex-1",
                       placeholder: "Enter custom RPC URL",
@@ -123,41 +120,35 @@ function ChainSelect(props) {
                         })
                     })
               ],
-              className: "mb-4 w-full max-w-md flex items-center space-x-4"
+              className: "mb-4 w-full max-w-[600px] flex items-center space-x-4"
             });
         break;
     case "HyperSync" :
-        tmp = JsxRuntime.jsxs("div", {
-              children: [
-                JsxRuntime.jsx("label", {
-                      children: "Select a supported chain from HyperSync",
-                      className: "block text-sm font-medium text-gray-700"
-                    }),
-                JsxRuntime.jsxs("select", {
-                      children: [
-                        JsxRuntime.jsx("option", {
-                              children: "Select a chain",
-                              value: ""
-                            }),
-                        Object.keys(supportedChains).map(function (name) {
-                              return JsxRuntime.jsx("option", {
-                                          children: name,
-                                          value: name
-                                        }, name);
-                            })
-                      ],
-                      className: "mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm",
-                      onChange: (function (e) {
-                          e.preventDefault();
-                          Core__Option.map(Core__Option.flatMap(Caml_option.nullable_to_opt(e.target.value), (function (chainName) {
-                                      return Js_dict.get(supportedChains, chainName);
-                                    })), (function (chainId) {
-                                  RescriptReactRouter.push("/" + chainId.toString());
-                                }));
-                        })
-                    })
-              ],
-              className: "mb-4 w-full max-w-md"
+        tmp = JsxRuntime.jsx("div", {
+              children: JsxRuntime.jsxs("select", {
+                    children: [
+                      JsxRuntime.jsx("option", {
+                            children: "Select a chain",
+                            value: ""
+                          }),
+                      Object.keys(supportedChains).map(function (name) {
+                            return JsxRuntime.jsx("option", {
+                                        children: name,
+                                        value: name
+                                      }, name);
+                          })
+                    ],
+                    className: "mt-1 block w-full px-3 py-2 border border-primary border-1 bg-white bg-opacity-80 shadow ",
+                    onChange: (function (e) {
+                        e.preventDefault();
+                        Core__Option.map(Core__Option.flatMap(Caml_option.nullable_to_opt(e.target.value), (function (chainName) {
+                                    return Js_dict.get(supportedChains, chainName);
+                                  })), (function (chainId) {
+                                RescriptReactRouter.push("/" + chainId.toString());
+                              }));
+                      })
+                  }),
+              className: "mb-4 w-full max-w-[600px]"
             });
         break;
     case "EthArchive" :
@@ -175,26 +166,28 @@ function ChainSelect(props) {
   return JsxRuntime.jsxs("div", {
               children: [
                 JsxRuntime.jsx("h1", {
-                      children: Time.useTypedCharactersString(50, "Select a blockchain and connection method"),
-                      className: "text-2xl font-bold"
+                      children: Time.useTypedCharactersString(35, "> Select a data source and network"),
+                      className: "text-4xl font-bold my-3"
                     }),
                 JsxRuntime.jsxs("div", {
                       children: [
-                        JsxRuntime.jsx(Buttons.make, {
-                              text: "RPC URL",
-                              onClick: (function () {
-                                  setSelectedDataSource(function (param) {
-                                        return "Rpc";
-                                      });
-                                })
-                            }),
                         JsxRuntime.jsx(Buttons.make, {
                               text: "HyperSync",
                               onClick: (function () {
                                   setSelectedDataSource(function (param) {
                                         return "HyperSync";
                                       });
-                                })
+                                }),
+                              isActive: selectedDataSource === "HyperSync"
+                            }),
+                        JsxRuntime.jsx(Buttons.make, {
+                              text: "RPC URL",
+                              onClick: (function () {
+                                  setSelectedDataSource(function (param) {
+                                        return "Rpc";
+                                      });
+                                }),
+                              isActive: selectedDataSource === "Rpc"
                             }),
                         JsxRuntime.jsx(Buttons.make, {
                               text: "Firehose",
@@ -202,7 +195,8 @@ function ChainSelect(props) {
                                   setSelectedDataSource(function (param) {
                                         return "Firehose";
                                       });
-                                })
+                                }),
+                              isActive: selectedDataSource === "Firehose"
                             }),
                         JsxRuntime.jsx(Buttons.make, {
                               text: "EthArchive",
@@ -210,10 +204,11 @@ function ChainSelect(props) {
                                   setSelectedDataSource(function (param) {
                                         return "EthArchive";
                                       });
-                                })
+                                }),
+                              isActive: selectedDataSource === "EthArchive"
                             })
                       ],
-                      className: "flex flex-col sm:flex-row sm:space-x-4 w-full justify-center"
+                      className: "flex flex-col sm:flex-row sm:space-x-4 w-full justify-center my-4"
                     }),
                 tmp
               ],

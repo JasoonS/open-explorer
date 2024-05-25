@@ -9,6 +9,7 @@ module.exports = {
     extend: {
       colors: {
         primary: lumoPurple,
+        secondary: lumoGreen,
       },
       borderColor: {
         DEFAULT: lumoPurple,

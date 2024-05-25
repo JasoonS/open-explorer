@@ -1,0 +1,60 @@
+/* Reset form element styles */
+form,
+input,
+textarea,
+select,
+button {
+  margin: 0;
+  padding: 0;
+  outline: none;
+  background: none;
+  font: inherit;
+  color: inherit;
+  box-sizing: border-box;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+/* Ensure inputs and buttons display correctly */
+input,
+textarea {
+  width: 100%;
+  resize: none; /* Prevents textarea from being resizable */
+}
+
+button {
+  cursor: pointer;
+}
+
+/* Remove default styling from checkbox and radio buttons */
+input[type="checkbox"],
+input[type="radio"] {
+  width: auto;
+  display: inline-block;
+}
+
+/* Style selects to remove default appearance */
+select {
+  background: none;
+  border: none;
+}
+
+/* Optional: Styling for select dropdown arrow */
+select::-ms-expand {
+  display: none; /* IE10+ */
+}
+
+/* General reset for form elements */
+fieldset {
+  border: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Ensure labels are displayed correctly */
+label {
+  display: inline-block;
+  margin: 0;
+  padding: 0;
+}

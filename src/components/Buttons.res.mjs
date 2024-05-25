@@ -6,7 +6,9 @@ function Buttons(props) {
   var onClick = props.onClick;
   return JsxRuntime.jsx("button", {
               children: props.text,
-              className: "bg-black px-4 py-1 m-2 text-primary border-primary border w-40 hover:bg-primary hover:text-black hover:border-2",
+              className: "bg-black px-4 py-1 m-2 text-primary " + (
+                props.isActive ? "border-secondary" : "border-primary"
+              ) + " border w-40 hover:bg-primary hover:text-black hover:border-2",
               onClick: (function (param) {
                   onClick();
                 })
