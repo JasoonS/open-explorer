@@ -32,6 +32,7 @@ Another major benefit is being able to easily run a local explorer that can conn
 
 - [ReScript](https://rescript-lang.org)
 - [Tailwind](https://tailwindcss.com/)
+- [ensdata](https://ensdata.net/)
 - [Verifier Alliance](https://verifieralliance.org)
 
 ## Get started
