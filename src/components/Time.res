@@ -30,6 +30,31 @@ let useTypedCharactersString = (~delay=25, string) => {
   string->Js.String2.substrAtMost(~from=0, ~length=revealedCharCount)
 }
 
+let useRotatingCharacterAnimation = (~delay=25, string) => {
+  let (index, setIndex) = React.useState(_ => 0)
+  let (charToShow, setCharToShow) = React.useState(_ => string->String.charAt(index))
+  let stringLength = string->String.length
+  let (optIntervalId, setOptIntervalId) = React.useState(_ => None)
+
+  React.useEffect2(() => {
+    let intervalId = Js.Global.setInterval(() => {
+      setIndex(
+        index => {
+          let inc = index + 1
+          setCharToShow(_ => string->String.charAt(Int.mod(inc, stringLength)))
+          inc
+        },
+      )
+    }, delay)
+
+    setOptIntervalId(_ => Some(intervalId))
+
+    Some(() => Js.Global.clearInterval(intervalId))
+  }, (delay, string))
+
+  charToShow
+}
+
 @ocaml.doc(`Delay the display execution`)
 module DelayedDisplay = {
   @react.component
