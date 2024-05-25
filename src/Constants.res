@@ -1,4 +1,4 @@
-let idToRescriptName: Js.Dict.t<string> = {
+let idToViemName: Js.Dict.t<string> = {
   "1": "mainnet",
   "5": "goerli",
   "10": "optimism",

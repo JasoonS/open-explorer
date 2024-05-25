@@ -54,7 +54,6 @@ let getBlocks = async (~serverUrl, ~fromBlock, ~toBlock) => {
   switch await HyperSyncJsonApi.executeHyperSyncQuery(~serverUrl, ~postQueryBody) {
   | Ok(res) =>
     res.data->Array.flatMap(res => {
-      Js.log(res)
       switch res {
       | {blocks, _} =>
         blocks->Array.map(block => {
