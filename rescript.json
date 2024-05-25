@@ -1,5 +1,5 @@
 {
-  "name": "browser-based-block-explorer",
+  "name": "open-explorer",
   "sources": [
     {
       "dir": "src",
@@ -21,6 +21,7 @@
   "bsc-flags": [
     "-open RescriptCore"
   ],
+  "bsc-flags": ["-open RescriptCore"],
   "jsx": {
     "version": 4
   }
