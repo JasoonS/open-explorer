@@ -186,7 +186,8 @@ module InfoTabs = {
 }
 @react.component
 let make = (~chainId, ~address: Viem.Address.t, ~addressSubPage: Routes.addressSubPage) => {
-  <div className="p-4 max-w-3xl mx-auto shadow-md">
+  <div
+    className="flex flex-col items-center justify-center h-screen m-0 p-0 text-primary overflow-y-hidden">
     <div className="mb-4">
       <Overview address />
       <InfoTabs address chainId addressSubPage />
