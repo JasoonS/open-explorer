@@ -16,12 +16,13 @@
   "bs-dependencies": [
     "@rescript/core",
     "@rescript/react",
+    "rescript-schema",
     "@glennsl/rescript-fetch"
   ],
   "bsc-flags": [
-    "-open RescriptCore"
+    "-open RescriptCore",
+    "-open RescriptSchema"
   ],
-  "bsc-flags": ["-open RescriptCore"],
   "jsx": {
     "version": 4
   }

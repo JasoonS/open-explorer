@@ -7,10 +7,11 @@ type addressSubPage = Transactions | Erc20Transactions | Contract
 type txSubPage = Overview | Events
 type page =
   | ChainSelect
-  | Search(chainId)
-  | Block(chainId, blockNumber)
-  | Address(chainId, address, addressSubPage)
-  | Transaction(chainId, txHash, txSubPage)
+  | Search({chainId: int})
+  | BlocksPage({chainId: int})
+  | Block({chainId: int, blockNumber: int})
+  | Address({chainId: int, address: string, addressSubPage: addressSubPage})
+  | Transaction({chainId: int, txHash: string, txSubPage: txSubPage})
   | Unknown
   | Error(string)
 
@@ -24,9 +25,10 @@ let usePage = () => {
     // TODO: check that the chainId is of a supported chain
     | Some(chainId) =>
       switch restOfParams {
-      | list{"search"} => Search(chainId)
+      | list{"search"} => Search({chainId: chainId})
 
-      | list{"address", address} => Address(chainId, address, Transactions)
+      | list{"address", address} => Address({chainId, address, addressSubPage: Transactions})
+      | list{} => BlocksPage({chainId: chainId})
       | _ => Unknown
       }
     | None => Error("The chainId is invalid, it must be an integer")
