@@ -56,10 +56,10 @@ let useBlocks = (~serverUrl, ~chainHeight, ~pageSize=20, ~pageIndex=0) => {
     let fromBlock = toBlock - pageSize + 1
     Queries.getBlocks(~serverUrl, ~fromBlock, ~toBlock)
     ->Promise.thenResolve(res => {
-      setBlocks(_ => Data(res))
+      setBlocks(_ => Data(res->Array.toReversed))
     })
     ->Promise.catch(exn => {
-      Console.log(exn)
+      Console.error(exn)
       setBlocks(
         prev =>
           switch prev {
