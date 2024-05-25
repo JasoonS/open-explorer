@@ -72,7 +72,8 @@ let make = () => {
   let (selectedChain, setSelectedChain) = React.useState(() => "")
   let (rpcUrl, setRpcUrl) = React.useState(() => "")
 
-  <div className="flex flex-col items-center justify-center min-h-screen m-0 p-0 text-primary">
+  <div
+    className="flex flex-col items-center justify-center h-screen m-0 p-0 text-primary overflow-y-hidden">
     <h1 className="text-4xl font-bold my-3">
       {Time.useTypedCharactersString(~delay=35, "> Select a data source and network")->React.string}
     </h1>

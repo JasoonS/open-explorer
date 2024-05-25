@@ -212,7 +212,7 @@ function ChainSelect(props) {
                     }),
                 tmp
               ],
-              className: "flex flex-col items-center justify-center min-h-screen m-0 p-0 text-primary"
+              className: "flex flex-col items-center justify-center h-screen m-0 p-0 text-primary overflow-y-hidden"
             });
 }
 
