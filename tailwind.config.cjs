@@ -14,6 +14,11 @@ module.exports = {
       borderColor: {
         DEFAULT: lumoPurple,
       },
+      fontSize: {
+        xxxxs: ".4rem",
+        xxxs: ".5rem",
+        xxs: ".6rem",
+      },
     },
   },
   plugins: [],

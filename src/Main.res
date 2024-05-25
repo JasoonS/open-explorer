@@ -6,6 +6,7 @@ switch ReactDOM.querySelector("#root") {
   ReactDOM.Client.createRoot(domElement)->ReactDOM.Client.Root.render(
     <React.StrictMode>
       <App />
+      <Donate />
     </React.StrictMode>,
   )
 | None => ()

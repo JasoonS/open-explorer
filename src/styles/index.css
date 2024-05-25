@@ -9,10 +9,12 @@
 
 body {
   background: black;
+  overflow-y: hidden;
 }
 
 #root {
   font-family: "ocra";
+
   background: linear-gradient(
       to bottom left,
       rgba(0, 0, 9, 6),
