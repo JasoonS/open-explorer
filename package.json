@@ -21,6 +21,7 @@
     "rescript": "^11.1.0"
   },
   "devDependencies": {
+    "@glennsl/rescript-fetch": "^0.2.0",
     "@vitejs/plugin-react": "^4.2.1",
     "autoprefixer": "^10.4.15",
     "postcss": "^8.4.28",
