@@ -11,7 +11,7 @@ type page =
   | BlocksPage({chainId: int})
   | Block({chainId: int, blockNumber: int})
   | Address({chainId: int, address: Viem.Address.t, addressSubPage: addressSubPage})
-  | Transaction({chainId: int, txHash: string, txSubPage: txSubPage})
+  | TransactionPage({chainId: int, txHash: string})
   | Unknown
   | Error(string)
 
@@ -41,7 +41,7 @@ let usePage = () => {
     | Some(chainId) =>
       switch restOfParams {
       | list{"search"} => Search({chainId: chainId})
-
+      | list{"tx", transactionHash} => TransactionPage({chainId, txHash: transactionHash})
       | list{"address", address} =>
         let subView = switch url.hash {
         | "code" => Contract

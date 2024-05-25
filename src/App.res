@@ -9,7 +9,7 @@ let make = () => {
   | BlocksPage({chainId}) => <BlocksPage chainId />
   | Block({chainId, blockNumber}) => <p> {"block"->React.string} </p>
   | Address({chainId, address, addressSubPage}) => <Address chainId address addressSubPage />
-  | Transaction({chainId, txHash, txSubPage}) => <p> {"tx"->React.string} </p>
+  | TransactionPage({chainId, txHash}) => <TransactionPage chainId={chainId->Int.toString} txHash />
   | Unknown => <p> {"unknown"->React.string} </p>
   | Error(error) => <p> {error->React.string} </p>
   }
