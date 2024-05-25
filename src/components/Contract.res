@@ -29,7 +29,7 @@ let make = (~chainId: int, ~address: Viem.Address.t) => {
   }, (address, chainId))
 
   // Render the verified contract data
-  <div className="p-4 h-full max-h-screen-70 overflow-auto">
+  <div className="p-4 h-full max-w-3xl max-h-screen-70 overflow-auto">
     <h2 className="text-lg font-bold my-4"> {React.string("Verified Contracts")} </h2>
     {switch contracts {
     | Pending => <p> {React.string("Loading...")} </p>
