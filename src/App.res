@@ -2,28 +2,20 @@
 let make = () => {
   let (count, setCount) = React.useState(() => 0)
   let url = RescriptReactRouter.useUrl()
+  let page = Routes.usePage()
 
-  switch url.path {
-  | list{chainId, "search"} => <p> {"search"->React.string} </p>
-  | list{chainId, "address", address} =>
-    <p> {`address - ${address} on chain: ${chainId}`->React.string} </p>
-  | _ =>
-    <div className="p-6">
-      <h1 className="text-3xl font-semibold"> {"What is this about?"->React.string} </h1>
-      <p>
-        {React.string(
-          "This is a simple template for a Vite project using ReScript & Tailwind CSS.",
-        )}
-      </p>
-      <h2 className="text-2xl font-semibold mt-5"> {React.string("Fast Refresh Test")} </h2>
-      <Button onClick={_ => setCount(count => count + 1)}>
-        {React.string(`count is ${count->Int.toString}`)}
-      </Button>
-      <p>
-        {React.string("Edit ")}
-        <code> {React.string("src/App.res")} </code>
-        {React.string(" and save to test Fast Refresh.")}
-      </p>
-    </div>
+  switch page {
+  | ChainSelect =>
+    <>
+      <p> {"select"->React.string} </p>
+      <ChainSelect />
+    </>
+  | Search(chainId) => <p> {"search"->React.string} </p>
+  | Block(chainId, blockNumber) => <p> {"block"->React.string} </p>
+  | Address(chainId, address, addressSubPage) =>
+    <p> {`address - ${address} on chain: ${chainId->Int.toString}`->React.string} </p>
+  | Transaction(chainId, txHash, txSubPage) => <p> {"tx"->React.string} </p>
+  | Unknown => <p> {"unknown"->React.string} </p>
+  | Error(error) => <p> {error->React.string} </p>
   }
 }
