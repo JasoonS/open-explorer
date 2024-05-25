@@ -2,7 +2,7 @@ type transaction = {
   hash: string,
   from: string,
   to: string,
-  value: string,
+  value: string, // This should be a BigInt and decimals should be a separete field.
   timestamp: string,
 }
 
@@ -11,12 +11,48 @@ type contract = {
   address: string,
 }
 
-type erc20Transfer = {
-  hash: string,
-  from: string,
-  to: string,
-  value: string,
-  timestamp: string,
+module TransactionRow = {
+  @react.component
+  let make = (~tx: transaction, ~rowStyle: string, ~symbol) => {
+    <tr className=rowStyle>
+      <td className="py-1 px-3 text-left"> {tx.hash->React.string} </td>
+      <td className="py-1 px-3 text-left"> {tx.from->React.string} </td>
+      <td className="py-1 px-3 text-left"> {tx.to->React.string} </td>
+      /// TODO: rather do a base 18 big int conversion here.
+      <td className="py-1 px-3 text-left"> {(tx.value ++ symbol)->React.string} </td>
+      <td className="py-1 px-3 text-left"> {tx.timestamp->React.string} </td>
+    </tr>
+  }
+}
+
+module Transactions = {
+  @react.component
+  let make = (~transactions: array<transaction>, ~symbolForAll: option<string>=?) => {
+    <table
+      className="text-white border rounded border-2 border-primary p-2 m-2 bg-black bg-opacity-30">
+      <thead className="m-10 uppercase bg-black">
+        <tr>
+          <th className="py-3 px-6 text-left"> {"Hash"->React.string} </th>
+          <th className="py-3 px-6 text-left"> {"From"->React.string} </th>
+          <th className="py-3 px-6 text-left"> {"To"->React.string} </th>
+          <th className="py-3 px-6 text-left"> {"Value"->React.string} </th>
+          <th className="py-3 px-6 text-left"> {"Timestamp"->React.string} </th>
+        </tr>
+      </thead>
+      <tbody>
+        {transactions
+        ->Array.mapWithIndex((tx, index) =>
+          <TransactionRow
+            symbol={symbolForAll->Option.getWithDefault("")}
+            key=tx.hash
+            tx
+            rowStyle={index->Int.mod(2) == 0 ? "bg-white bg-opacity-10" : ""}
+          />
+        )
+        ->React.array}
+      </tbody>
+    </table>
+  }
 }
 
 module Overview = {
@@ -41,9 +77,9 @@ module InfoTabs = {
   @react.component
   let make = (~chainId, ~address: Viem.Address.t, ~addressSubPage: Routes.addressSubPage) => {
     // Dummy data for overview and transactions
-    let transactions = [
-      {hash: "0x1", from: "0x123", to: "0x456", value: "1.0 ETH", timestamp: "2024-05-25 12:34:56"},
-      {hash: "0x2", from: "0x789", to: "0xabc", value: "2.5 ETH", timestamp: "2024-05-24 11:22:33"},
+    let transactions: array<transaction> = [
+      {hash: "0x1", from: "0x123", to: "0x456", value: "1.0", timestamp: "2024-05-25 12:34:56"},
+      {hash: "0x2", from: "0x789", to: "0xabc", value: "2.5", timestamp: "2024-05-24 11:22:33"},
     ]
     let contracts = [
       {name: "ContractA", address: "0xContractA"},
@@ -54,7 +90,7 @@ module InfoTabs = {
         hash: "0x3",
         from: "0xdef",
         to: "0xghi",
-        value: "1000 USDT",
+        value: "1000",
         timestamp: "2024-05-23 10:20:30",
       },
     ]
@@ -90,36 +126,7 @@ module InfoTabs = {
         </button>
       </div>
       {switch addressSubPage {
-      | Transactions =>
-        <div>
-          <h2 className="text-lg font-bold my-4"> {React.string("Transactions")} </h2>
-          {transactions
-          ->Array.map(tx =>
-            <div key=tx.hash className="p-4 border rounded-md mb-2">
-              <p>
-                <strong> {React.string("Hash:")} </strong>
-                {tx.hash->React.string}
-              </p>
-              <p>
-                <strong> {React.string("From:")} </strong>
-                {tx.from->React.string}
-              </p>
-              <p>
-                <strong> {React.string("To:")} </strong>
-                {tx.to->React.string}
-              </p>
-              <p>
-                <strong> {React.string("Value:")} </strong>
-                {tx.value->React.string}
-              </p>
-              <p>
-                <strong> {React.string("Timestamp:")} </strong>
-                {tx.timestamp->React.string}
-              </p>
-            </div>
-          )
-          ->React.array}
-        </div>
+      | Transactions => <Transactions transactions symbolForAll="ETH" />
       | Contract =>
         <div>
           <h2 className="text-lg font-bold my-4"> {React.string("Verified Contracts")} </h2>
@@ -138,36 +145,7 @@ module InfoTabs = {
           )
           ->React.array}
         </div>
-      | Erc20Transactions =>
-        <div>
-          <h2 className="text-lg font-bold my-4"> {React.string("ERC20 Transfers")} </h2>
-          {erc20Transfers
-          ->Array.map(tx =>
-            <div key=tx.hash className="p-4 border rounded-md mb-2">
-              <p>
-                <strong> {React.string("Hash:")} </strong>
-                {tx.hash->React.string}
-              </p>
-              <p>
-                <strong> {React.string("From:")} </strong>
-                {tx.from->React.string}
-              </p>
-              <p>
-                <strong> {React.string("To:")} </strong>
-                {tx.to->React.string}
-              </p>
-              <p>
-                <strong> {React.string("Value:")} </strong>
-                {tx.value->React.string}
-              </p>
-              <p>
-                <strong> {React.string("Timestamp:")} </strong>
-                {tx.timestamp->React.string}
-              </p>
-            </div>
-          )
-          ->React.array}
-        </div>
+      | Erc20Transactions => <Transactions transactions />
       | _ => React.null
       }}
     </>
