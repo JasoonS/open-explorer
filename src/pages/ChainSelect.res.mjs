@@ -173,8 +173,8 @@ function ChainSelect(props) {
   return JsxRuntime.jsxs("div", {
               children: [
                 JsxRuntime.jsx("h1", {
-                      children: "Select a Blockchain and connection method",
-                      className: "text-2xl font-bold mb-4"
+                      children: "Select a blockchain and connection method",
+                      className: "text-2xl font-bold"
                     }),
                 JsxRuntime.jsxs("div", {
                       children: [
@@ -219,7 +219,7 @@ function ChainSelect(props) {
                     }),
                 tmp
               ],
-              className: "flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4"
+              className: "flex flex-col items-center justify-center min-h-screen m-0 p-0 text-primary"
             });
 }
 

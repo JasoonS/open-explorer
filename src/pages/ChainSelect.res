@@ -72,9 +72,9 @@ let make = () => {
   let (selectedChain, setSelectedChain) = React.useState(() => "")
   let (rpcUrl, setRpcUrl) = React.useState(() => "")
 
-  <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
-    <h1 className="text-2xl font-bold mb-4">
-      {"Select a Blockchain and connection method"->React.string}
+  <div className="flex flex-col items-center justify-center min-h-screen m-0 p-0 text-primary">
+    <h1 className="text-2xl font-bold">
+      {"Select a blockchain and connection method"->React.string}
     </h1>
     <div className="flex flex-col sm:flex-row sm:space-x-4 w-full max-w-md">
       <button
