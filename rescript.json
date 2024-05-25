@@ -8,7 +8,7 @@
   ],
   "package-specs": [
     {
-      "module": "es6",
+      "module": "esmodule",
       "in-source": true
     }
   ],
@@ -19,10 +19,7 @@
     "rescript-schema",
     "@glennsl/rescript-fetch"
   ],
-  "bsc-flags": [
-    "-open RescriptCore",
-    "-open RescriptSchema"
-  ],
+  "bsc-flags": ["-open RescriptCore", "-open RescriptSchema"],
   "jsx": {
     "version": 4
   }

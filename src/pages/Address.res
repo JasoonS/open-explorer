@@ -50,19 +50,57 @@ module Transactions = {
   }
 }
 
+let getBalance = async (client, address) => {
+  let balance = await client->Viem.Client.getBalance({"address": address})
+  let formattedBalance = balance->Viem.Utilities.Units.formatEther
+  formattedBalance
+}
+
+let makeClientFromChainId = chainId => {
+  let viemChain = chainId->Viem.Chains.fromChainId
+  let validChain = switch viemChain {
+  | None => Js.Exn.raiseError("Unable to map chainId to viem chain")
+  | Some(viemChain) => viemChain
+  }
+  Viem.Client.createPublicClient({
+    "chain": validChain,
+    "transport": Viem.Transport.http(),
+  })
+}
+
 module Overview = {
   @react.component
   let make = (~address: Viem.Address.t) => {
-    let balance = "12.34 ETH"
+    let url = RescriptReactRouter.useUrl()
+    let chainId =
+      url.path
+      ->List.head
+      ->Option.getOr("1")
+      ->Int.fromString
+      ->Option.getOr(1) // i know, tired
+    let client = makeClientFromChainId(chainId)
+    let (balance, setBalance) = React.useState(() => "")
+
+    React.useEffect0(() => {
+      client
+      ->getBalance(address)
+      ->Promise.thenResolve(bal => setBalance(_ => bal->Int.toString))
+      ->ignore
+      None
+    })
+
     <div className="mb-4 p-4 bg-gray-100 rounded-md">
       <h1 className="text-xl font-bold"> {React.string("Address Overview")} </h1>
       <p>
         <strong> {React.string("Address:")} </strong>
         {address->Viem.Address.toString->React.string}
+        <CopyButton textToCopy={address->Viem.Address.toString} />
       </p>
       <p>
         <strong> {React.string("Balance:")} </strong>
         {balance->React.string}
+        {" "->React.string}
+        {"native token"->React.string}
       </p>
     </div>
   }
