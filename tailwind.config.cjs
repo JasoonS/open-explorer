@@ -10,6 +10,9 @@ module.exports = {
       colors: {
         primary: lumoPurple,
       },
+      borderColor: {
+        DEFAULT: lumoPurple,
+      },
     },
   },
   plugins: [],

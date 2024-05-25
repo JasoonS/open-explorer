@@ -2,6 +2,7 @@
 
 import * as Time from "../components/Time.res.mjs";
 import * as React from "react";
+import * as Buttons from "../components/Buttons.res.mjs";
 import * as Js_dict from "rescript/lib/es6/js_dict.js";
 import * as Caml_option from "rescript/lib/es6/caml_option.js";
 import * as Core__Option from "@rescript/core/src/Core__Option.res.mjs";
@@ -179,44 +180,40 @@ function ChainSelect(props) {
                     }),
                 JsxRuntime.jsxs("div", {
                       children: [
-                        JsxRuntime.jsx("button", {
-                              children: "RPC URL",
-                              className: "flex-1 px-4 py-2 mb-2 sm:mb-0 bg-blue-500 text-white font-medium rounded-md shadow-sm hover:bg-blue-600 focus:outline-none",
-                              onClick: (function (param) {
+                        JsxRuntime.jsx(Buttons.make, {
+                              text: "RPC URL",
+                              onClick: (function () {
                                   setSelectedDataSource(function (param) {
                                         return "Rpc";
                                       });
                                 })
                             }),
-                        JsxRuntime.jsx("button", {
-                              children: "HyperSync",
-                              className: "flex-1 px-4 py-2 mb-2 sm:mb-0 bg-blue-500 text-white font-medium rounded-md shadow-sm hover:bg-blue-600 focus:outline-none",
-                              onClick: (function (param) {
+                        JsxRuntime.jsx(Buttons.make, {
+                              text: "HyperSync",
+                              onClick: (function () {
                                   setSelectedDataSource(function (param) {
                                         return "HyperSync";
                                       });
                                 })
                             }),
-                        JsxRuntime.jsx("button", {
-                              children: "Firehose",
-                              className: "flex-1 px-4 py-2 mb-2 sm:mb-0 bg-green-500 text-white font-medium rounded-md shadow-sm hover:bg-green-600 focus:outline-none",
-                              onClick: (function (param) {
+                        JsxRuntime.jsx(Buttons.make, {
+                              text: "Firehose",
+                              onClick: (function () {
                                   setSelectedDataSource(function (param) {
                                         return "Firehose";
                                       });
                                 })
                             }),
-                        JsxRuntime.jsx("button", {
-                              children: "EthArchive",
-                              className: "flex-1 px-4 py-2 bg-purple-500 text-white font-medium rounded-md shadow-sm hover:bg-purple-600 focus:outline-none",
-                              onClick: (function (param) {
+                        JsxRuntime.jsx(Buttons.make, {
+                              text: "EthArchive",
+                              onClick: (function () {
                                   setSelectedDataSource(function (param) {
                                         return "EthArchive";
                                       });
                                 })
                             })
                       ],
-                      className: "flex flex-col sm:flex-row sm:space-x-4 w-full max-w-md"
+                      className: "flex flex-col sm:flex-row sm:space-x-4 w-full justify-center"
                     }),
                 tmp
               ],

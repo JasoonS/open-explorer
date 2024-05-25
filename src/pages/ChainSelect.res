@@ -82,27 +82,11 @@ let make = () => {
         "Select a blockchain and connection method",
       )->React.string}
     </h1>
-    <div className="flex flex-col sm:flex-row sm:space-x-4 w-full max-w-md">
-      <button
-        className="flex-1 px-4 py-2 mb-2 sm:mb-0 bg-blue-500 text-white font-medium rounded-md shadow-sm hover:bg-blue-600 focus:outline-none"
-        onClick={_ => setSelectedDataSource(_ => Rpc)}>
-        {"RPC URL"->React.string}
-      </button>
-      <button
-        className="flex-1 px-4 py-2 mb-2 sm:mb-0 bg-blue-500 text-white font-medium rounded-md shadow-sm hover:bg-blue-600 focus:outline-none"
-        onClick={_ => setSelectedDataSource(_ => HyperSync)}>
-        {"HyperSync"->React.string}
-      </button>
-      <button
-        className="flex-1 px-4 py-2 mb-2 sm:mb-0 bg-green-500 text-white font-medium rounded-md shadow-sm hover:bg-green-600 focus:outline-none"
-        onClick={_ => setSelectedDataSource(_ => Firehose)}>
-        {"Firehose"->React.string}
-      </button>
-      <button
-        className="flex-1 px-4 py-2 bg-purple-500 text-white font-medium rounded-md shadow-sm hover:bg-purple-600 focus:outline-none"
-        onClick={_ => setSelectedDataSource(_ => EthArchive)}>
-        {"EthArchive"->React.string}
-      </button>
+    <div className="flex flex-col sm:flex-row sm:space-x-4 w-full justify-center">
+      <Buttons text="RPC URL" onClick={_ => setSelectedDataSource(_ => Rpc)} />
+      <Buttons text="HyperSync" onClick={_ => setSelectedDataSource(_ => HyperSync)} />
+      <Buttons text="Firehose" onClick={_ => setSelectedDataSource(_ => Firehose)} />
+      <Buttons text="EthArchive" onClick={_ => setSelectedDataSource(_ => EthArchive)} />
     </div>
     {switch selectedDataSource {
     | Rpc =>
