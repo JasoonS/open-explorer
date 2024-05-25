@@ -31,6 +31,10 @@ If you encounter any bugs or have suggestions for improvements, please open a gh
 
 We welcome contributions and efforts to make Open Explorer better! If you have any questions or need further assistance, feel free to reach out to the maintainers.
 
+## License
+
+By contributing, you agree that your contributions will be licensed under the [MIT License](/LICENSE.md).
+
 ## Donations
 
 If you would like to support the project, please donate to Goerli Dezentral gGmbH, the non profit and organizers of EthBerlin 4, where Open Explorer is born.
