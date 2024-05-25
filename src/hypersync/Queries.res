@@ -16,7 +16,7 @@ type blockData = {
   gasUsed: bigint,
   timestamp: bigint,
   // baseFeePerGas: option<bigint>,
-  transactionCount: int,
+  // transactionCount: int,
 }
 
 let getBlocks = async (~serverUrl, ~fromBlock, ~toBlock) => {
@@ -54,8 +54,9 @@ let getBlocks = async (~serverUrl, ~fromBlock, ~toBlock) => {
   switch await HyperSyncJsonApi.executeHyperSyncQuery(~serverUrl, ~postQueryBody) {
   | Ok(res) =>
     res.data->Array.flatMap(res => {
+      Js.log(res)
       switch res {
-      | {blocks, transactions} =>
+      | {blocks, _} =>
         blocks->Array.map(block => {
           switch block {
           | {
@@ -92,7 +93,7 @@ let getBlocks = async (~serverUrl, ~fromBlock, ~toBlock) => {
               gasUsed,
               timestamp,
               // baseFeePerGas, //not working
-              transactionCount: transactions->Array.length,
+              // transactionCount: transactions->Array.length,
             }
           | block =>
             Js.log(
