@@ -29,8 +29,8 @@ module BlockRow = {
 
 module Blocks = {
   @react.component
-  let make = (~chainId, ~chainHeight) => {
-    let blocks = HyperSyncHooks.useBlocks(~chainId, ~chainHeight)
+  let make = (~chainId, ~chainHeight, ~page) => {
+    let blocks = HyperSyncHooks.useBlocks(~chainId, ~chainHeight, ~pageIndex=page)
 
     <table
       className="text-white border rounded border-2 border-primary p-2 m-2 bg-black bg-opacity-30">
@@ -64,13 +64,28 @@ module Blocks = {
   }
 }
 
+module TableOuter = {
+  @react.component
+  let make = (~chainId, ~chainHeight) => {
+    let (page, setPage) = React.useState(() => 0)
+    <div className="overflow-x-auto">
+      <Blocks chainId chainHeight page />
+      <Pagination
+        activePage={page + 1}
+        numPages={chainHeight / 20 - 1}
+        onChange={newPage => setPage(_ => newPage - 1)}
+      />
+    </div>
+  }
+}
+
 @react.component
 let make = (~chainId) => {
   let chainHeight = HyperSyncHooks.useChainHeight(~chainId)
   <div
     className="flex flex-col items-center justify-center h-screen m-0 p-0 text-primary overflow-y-hidden">
     {switch chainHeight {
-    | Data(chainHeight) => <Blocks chainId chainHeight />
+    | Data(chainHeight) => <TableOuter chainId chainHeight />
     | Loading => "loading..."->React.string
     | Err(_exn) => "Error"->React.string
     }}
