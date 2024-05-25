@@ -19,7 +19,7 @@ module VerifyEtherscan = {
     libraryMap: Js.Dict.t<string>,
   }
 
-  type response = {result: array<responseItem>}
+  type response = {error?: option<string>, message?: option<string>, result: array<responseItem>}
 
   let verify = async (data: requestBody): response => {
     open Fetch

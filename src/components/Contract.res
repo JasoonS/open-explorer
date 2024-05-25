@@ -1,9 +1,7 @@
-type addressType = Contract | Address
-
 type contractStatus =
   | Verified(array<Sourcify.FilesByAddress.fileItem>)
   | NotVerified(string)
-  | NotFound(string)
+  | NotFoundOnEtherscan(string)
   | Pending
 
 @react.component
@@ -12,18 +10,31 @@ let make = (~chainId: int, ~address: Viem.Address.t) => {
   // State to hold the verified contract data
   let (contracts, setContracts) = React.useState(() => Pending)
 
+  let fetchVerifiedContracts = async () => {
+    let result = await Sourcify.FilesByAddress.getFiles(chainId->Int.toString, addressStr)
+    switch result {
+    | {error: Some(error)} => setContracts(_ => NotVerified(error))
+    | {files: Some(files)} => setContracts(_ => Verified(files))
+    }
+  }
+
+  let verifyOnEtherscan = async () => {
+    setContracts(_ => Pending)
+    let body: Sourcify.VerifyEtherscan.requestBody = {
+      address: addressStr,
+      chainId: chainId->Int.toString,
+    }
+    let verifyResult = await Sourcify.VerifyEtherscan.verify(body)
+
+    switch verifyResult {
+    | {error: Some(error)} => setContracts(_ => NotFoundOnEtherscan(error))
+    | _ => fetchVerifiedContracts()->ignore
+    }
+    // Refetch the data after verification attempt
+  }
+
   // Effect to load verified contract data from Sourcify API
   React.useEffect2(() => {
-    let fetchVerifiedContracts = async () => {
-      Js.log("looking for verifications")
-      let result = await Sourcify.FilesByAddress.getFiles(chainId->Int.toString, addressStr)
-
-      switch result {
-      | {error: Some(error)} => setContracts(_ => NotVerified(error))
-      | {files: Some(files)} => setContracts(_ => Verified(files))
-      }
-      Js.log2("VERIFICATION", result)
-    }
     fetchVerifiedContracts()->ignore
     None
   }, (address, chainId))
@@ -49,8 +60,28 @@ let make = (~chainId: int, ~address: Viem.Address.t) => {
         )
         ->React.array}
       </div>
-    | NotVerified(error) => <p> {React.string("Not Verified: " ++ error)} </p>
-    | NotFound(message) => <p> {React.string("Not Found: " ++ message)} </p>
+    | NotVerified(error) =>
+      <div>
+        <p> {React.string("Not Verified: " ++ error)} </p>
+        <button
+          className="mt-4 bg-blue-500 text-white py-2 px-4 rounded"
+          onClick={_ => verifyOnEtherscan()->ignore}>
+          {React.string("Verify on Etherscan")}
+        </button>
+      </div>
+    | NotFoundOnEtherscan(message) =>
+      <div>
+        <p> {React.string("Not Found on Etherscan: " ++ message)} </p>
+        <p className="mt-4">
+          {React.string("Please consider verifying contract on Sourcify if possible.")}
+        </p>
+        <a
+          href="https://sourcify.dev/#/verifier"
+          target="_blank"
+          className="mt-2 bg-green-500 text-white py-2 px-4 rounded inline-block">
+          {React.string("Verify on Sourcify")}
+        </a>
+      </div>
     }}
   </div>
 }
