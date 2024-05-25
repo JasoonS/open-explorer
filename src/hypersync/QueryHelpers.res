@@ -7,13 +7,15 @@ type queryError =
   | FailedToParseJson(exn)
   | Other(exn)
 
+exception QueryError(queryError)
+
 let executeFetchRequest = async (
   ~endpoint,
   ~method: Fetch.method,
   ~bodyAndSchema: option<('body, S.t<'body>)>=?,
   ~responseSchema: S.t<'data>,
   (),
-): result<'data, queryError> => {
+): result<'data, exn> => {
   try {
     open Fetch
 
@@ -40,5 +42,5 @@ let executeFetchRequest = async (
   | FailedToFetch(exn) => Error(FailedToFetch(exn))
   | FailedToParseJson(exn) => Error(FailedToParseJson(exn))
   | exn => Error(Other(exn))
-  }
+  }->Result.mapError(err => QueryError(err))
 }

@@ -1,5 +1,3 @@
-type unchecksummedEthAddress = string
-
 module QueryTypes = {
   type blockFieldOptions =
     | @as("number") Number
@@ -208,7 +206,7 @@ module ResponseTypes = {
     transactionsRoot?: string,
     stateRoot?: string,
     receiptsRoot?: string,
-    miner?: unchecksummedEthAddress,
+    miner?: Viem.Address.t,
     difficulty?: option<bigint>,
     totalDifficulty?: option<bigint>,
     extraData?: string,
@@ -230,7 +228,7 @@ module ResponseTypes = {
     transactionsRoot: ?s.field("transactions_root", S.option(S.string)),
     stateRoot: ?s.field("state_root", S.option(S.string)),
     receiptsRoot: ?s.field("receipts_root", S.option(S.string)),
-    miner: ?s.field("miner", S.option(S.string)),
+    miner: ?s.field("miner", S.option(Viem.Address.schema)),
     difficulty: ?s.field("difficulty", S.option(S.null(BigIntHelpers.schema))),
     totalDifficulty: ?s.field("total_difficulty", S.option(S.null(BigIntHelpers.schema))),
     extraData: ?s.field("extra_data", S.option(S.string)),
@@ -245,13 +243,13 @@ module ResponseTypes = {
   type transactionData = {
     blockHash?: string,
     blockNumber?: int,
-    from?: option<unchecksummedEthAddress>,
+    from?: option<Viem.Address.t>,
     gas?: bigint,
     gasPrice?: option<bigint>,
     hash?: string,
     input?: string,
     nonce?: int,
-    to?: option<unchecksummedEthAddress>,
+    to?: option<Viem.Address.t>,
     transactionIndex?: int,
     value?: bigint,
     v?: option<string>,
@@ -263,7 +261,7 @@ module ResponseTypes = {
     cumulativeGasUsed?: bigint,
     effectiveGasPrice?: bigint,
     gasUsed?: bigint,
-    contractAddress?: option<unchecksummedEthAddress>,
+    contractAddress?: option<Viem.Address.t>,
     logsBoom?: string,
     type_?: option<int>,
     root?: option<string>,
@@ -274,13 +272,13 @@ module ResponseTypes = {
   let transactionDataSchema = S.object(s => {
     blockHash: ?s.field("block_hash", S.option(S.string)),
     blockNumber: ?s.field("block_number", S.option(S.int)),
-    from: ?s.field("from", S.option(S.null(S.string))),
+    from: ?s.field("from", S.option(S.null(Viem.Address.schema))),
     gas: ?s.field("gas", S.option(BigIntHelpers.schema)),
     gasPrice: ?s.field("gas_price", S.option(S.null(BigIntHelpers.schema))),
     hash: ?s.field("hash", S.option(S.string)),
     input: ?s.field("input", S.option(S.string)),
     nonce: ?s.field("nonce", S.option(S.int)),
-    to: ?s.field("to", S.option(S.null(S.string))),
+    to: ?s.field("to", S.option(S.null(Viem.Address.schema))),
     transactionIndex: ?s.field("transaction_index", S.option(S.int)),
     value: ?s.field("value", S.option(BigIntHelpers.schema)),
     v: ?s.field("v", S.option(S.null(S.string))),
@@ -295,7 +293,7 @@ module ResponseTypes = {
     cumulativeGasUsed: ?s.field("cumulative_gas_used", S.option(BigIntHelpers.schema)),
     effectiveGasPrice: ?s.field("effective_gas_price", S.option(BigIntHelpers.schema)),
     gasUsed: ?s.field("gas_used", S.option(BigIntHelpers.schema)),
-    contractAddress: ?s.field("contract_address", S.option(S.null(S.string))),
+    contractAddress: ?s.field("contract_address", S.option(S.null(Viem.Address.schema))),
     logsBoom: ?s.field("logs_bloom", S.option(S.string)),
     type_: ?s.field("type", S.option(S.null(S.int))),
     root: ?s.field("root", S.option(S.null(S.string))),
@@ -310,7 +308,7 @@ module ResponseTypes = {
     transactionHash?: string,
     blockHash?: string,
     blockNumber?: int,
-    address?: unchecksummedEthAddress,
+    address?: Viem.Address.t,
     data?: string,
     topic0?: option<Viem.Topic.t>,
     topic1?: option<Viem.Topic.t>,
@@ -325,7 +323,7 @@ module ResponseTypes = {
     transactionHash: ?s.field("transaction_hash", S.option(S.string)),
     blockHash: ?s.field("block_hash", S.option(S.string)),
     blockNumber: ?s.field("block_number", S.option(S.int)),
-    address: ?s.field("address", S.option(S.string)),
+    address: ?s.field("address", S.option(Viem.Address.schema)),
     data: ?s.field("data", S.option(S.string)),
     topic0: ?s.field("topic0", S.option(S.null(Viem.Topic.schema))),
     topic1: ?s.field("topic1", S.option(S.null(Viem.Topic.schema))),
@@ -361,7 +359,7 @@ module ResponseTypes = {
 }
 
 let executeHyperSyncQuery = (~serverUrl, ~postQueryBody: QueryTypes.postQueryBody): promise<
-  result<ResponseTypes.queryResponse, QueryHelpers.queryError>,
+  result<ResponseTypes.queryResponse, exn>,
 > => {
   QueryHelpers.executeFetchRequest(
     ~endpoint=serverUrl ++ "/query",
@@ -375,7 +373,7 @@ let executeHyperSyncQuery = (~serverUrl, ~postQueryBody: QueryTypes.postQueryBod
 let getArchiveHeight = {
   let responseSchema = S.object(s => s.field("height", S.int))
 
-  async (~serverUrl): result<int, QueryHelpers.queryError> => {
+  async (~serverUrl): result<int, exn> => {
     await QueryHelpers.executeFetchRequest(
       ~endpoint=serverUrl ++ "/height",
       ~method=#GET,
