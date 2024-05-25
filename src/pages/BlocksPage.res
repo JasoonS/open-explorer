@@ -35,7 +35,7 @@ module Blocks = {
   let make = (~serverUrl, ~chainHeight) => {
     let blocks = HyperSyncHooks.useBlocks(~serverUrl, ~chainHeight)
 
-    <table>
+    <table className="text-white">
       <tr>
         <th> {"Block"->React.string} </th>
         <th> {"Age"->React.string} </th>

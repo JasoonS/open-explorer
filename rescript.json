@@ -23,7 +23,6 @@
     "-open RescriptCore",
     "-open RescriptSchema"
   ],
-  "bsc-flags": ["-open RescriptCore"],
   "jsx": {
     "version": 4
   }
