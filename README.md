@@ -24,3 +24,10 @@ pnpm run dev
 ```
 
 ## Contributions
+
+We welcome contributions and efforts to make Open Explorer better! If you have any questions or need further assistance, feel free to reach out to the maintainers.
+
+## Donations
+
+If you would like to support the project, please donate to Goerli Dezentral gGmbH, the non profit and organizers of EthBerlin 4, where Open Explorer is born.
+Donations to [dezent.eth](https://etherscan.io/address/0x59cc3Fc56B8B2988F259EC1E6f3446907130f728);
