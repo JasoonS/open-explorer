@@ -42,6 +42,8 @@ module Address = {
     | addr => Ok(addr)
     }
 
+  let zeroAddress = "0x0000000000000000000000000000000000000000"->fromStringUnsafe
+
   let toString = (addr: t): string => Obj.magic(addr)
 
   let schema = S.string->S.transform(s => {
