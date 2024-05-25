@@ -5,7 +5,10 @@ import * as React from "react";
 import * as Client from "react-dom/client";
 import * as JsxRuntime from "react/jsx-runtime";
 
-import './index.css'
+import './styles/index.css'
+;
+
+import './styles/remove-default.css'
 ;
 
 var domElement = document.querySelector("#root");

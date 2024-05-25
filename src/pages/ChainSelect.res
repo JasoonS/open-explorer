@@ -72,38 +72,35 @@ let make = () => {
   let (selectedChain, setSelectedChain) = React.useState(() => "")
   let (rpcUrl, setRpcUrl) = React.useState(() => "")
 
-  <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
-    <h1 className="text-2xl font-bold mb-4">
-      {"Select a Blockchain and connection method"->React.string}
+  <div className="flex flex-col items-center justify-center min-h-screen m-0 p-0 text-primary">
+    <h1 className="text-4xl font-bold my-3">
+      {Time.useTypedCharactersString(~delay=35, "> Select a data source and network")->React.string}
     </h1>
-    <div className="flex flex-col sm:flex-row sm:space-x-4 w-full max-w-md">
-      <button
-        className="flex-1 px-4 py-2 mb-2 sm:mb-0 bg-blue-500 text-white font-medium rounded-md shadow-sm hover:bg-blue-600 focus:outline-none"
-        onClick={_ => setSelectedDataSource(_ => Rpc)}>
-        {"RPC URL"->React.string}
-      </button>
-      <button
-        className="flex-1 px-4 py-2 mb-2 sm:mb-0 bg-blue-500 text-white font-medium rounded-md shadow-sm hover:bg-blue-600 focus:outline-none"
-        onClick={_ => setSelectedDataSource(_ => HyperSync)}>
-        {"HyperSync"->React.string}
-      </button>
-      <button
-        className="flex-1 px-4 py-2 mb-2 sm:mb-0 bg-green-500 text-white font-medium rounded-md shadow-sm hover:bg-green-600 focus:outline-none"
-        onClick={_ => setSelectedDataSource(_ => Firehose)}>
-        {"Firehose"->React.string}
-      </button>
-      <button
-        className="flex-1 px-4 py-2 bg-purple-500 text-white font-medium rounded-md shadow-sm hover:bg-purple-600 focus:outline-none"
-        onClick={_ => setSelectedDataSource(_ => EthArchive)}>
-        {"EthArchive"->React.string}
-      </button>
+    <div className="flex flex-col sm:flex-row sm:space-x-4 w-full justify-center my-4">
+      <Buttons
+        text="HyperSync"
+        onClick={_ => setSelectedDataSource(_ => HyperSync)}
+        isActive={selectedDataSource == HyperSync}
+      />
+      <Buttons
+        text="RPC URL"
+        onClick={_ => setSelectedDataSource(_ => Rpc)}
+        isActive={selectedDataSource == Rpc}
+      />
+      <Buttons
+        text="Firehose"
+        onClick={_ => setSelectedDataSource(_ => Firehose)}
+        isActive={selectedDataSource == Firehose}
+      />
+      <Buttons
+        text="EthArchive"
+        onClick={_ => setSelectedDataSource(_ => EthArchive)}
+        isActive={selectedDataSource == EthArchive}
+      />
     </div>
     {switch selectedDataSource {
     | Rpc =>
-      <div className="mb-4 w-full max-w-md flex items-center space-x-4">
-        <label className="block text-sm font-medium text-gray-700">
-          {"Enter RPC URL"->React.string}
-        </label>
+      <div className="mb-4 w-full max-w-[600px] flex items-center space-x-4">
         <input
           className="mt-1 block px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm flex-1"
           type_="text"
@@ -127,12 +124,9 @@ let make = () => {
         </button>
       </div>
     | HyperSync =>
-      <div className="mb-4 w-full max-w-md">
-        <label className="block text-sm font-medium text-gray-700">
-          {"Select a supported chain from HyperSync"->React.string}
-        </label>
+      <div className="mb-4 w-full max-w-[600px]">
         <select
-          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+          className="mt-1 block w-full px-3 py-2 border border-primary border-1 bg-white bg-opacity-80 shadow "
           // value=selectedChain
           onChange={e => {
             ReactEvent.Form.preventDefault(e)

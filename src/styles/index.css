@@ -1,0 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: "ocra";
+  src: url("/fonts/OCRA.ttf");
+}
+
+body {
+  background: black;
+}
+
+#root {
+  font-family: "ocra";
+  background: linear-gradient(
+      to bottom left,
+      rgba(0, 0, 9, 6),
+      rgba(0, 0, 1, 0.4)
+    ),
+    url("images/bg.webp") no-repeat center center fixed;
+  background-size: cover;
+  margin: 0;
+  padding: 0;
+}
