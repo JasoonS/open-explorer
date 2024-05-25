@@ -43,13 +43,10 @@ type response = {status: int, json: vague}
 let tryResolveEnsHandle = async ensHandle => {
   try {
     let resp = await fetch(`https://ensdata.net/${ensHandle}`)
-    Js.log(resp)
+
     let json = await resp->json
-    if json.status == 200 {
-      json.address
-    } else {
-      Js.Exn.raiseError("Unable to resolve ens handle")
-    }
+
+    json.address
   } catch {
   | _ => Js.Exn.raiseError("Unable to resolve ens handle")
   }
