@@ -27,31 +27,31 @@
 
 // note api often doesn't return all fields
 
-open Fetch
-
 type ensDataResp = {ens: string, address: string}
+type vague
+type response = {status: int, json: vague}
+@val external fetch: string => promise<response> = "fetch"
+@send external json: response => promise<'a> = "json"
+
+// let makeRequest = async url => {
+//   let response = await fetch(url)
+//   let json = await response->json
+//   Js.log(json)
+// }
 
 // todo, having cors issues with, also make this more related to resolvind ens handles
-let tryResolveEnsHandle = async address => {
+let tryResolveEnsHandle = async ensHandle => {
   try {
-    let resp = await fetch(
-      `https://ensdata.net/${address}`,
-      {
-        method: #GET,
-        headers: Headers.fromObject({
-          "Content-type": "application/json",
-        }),
-      },
-    )
-
-    if Response.ok(resp) {
-      let ens: ensDataResp = await Response.json(resp)->Obj.magic
-      ens.address
+    let resp = await fetch(`https://ensdata.net/${ensHandle}`)
+    Js.log(resp)
+    let json = await resp->json
+    if json.status == 200 {
+      json.address
     } else {
-      address
+      Js.Exn.raiseError("Unable to resolve ens handle")
     }
   } catch {
-  | _ => address
+  | _ => Js.Exn.raiseError("Unable to resolve ens handle")
   }
 }
 

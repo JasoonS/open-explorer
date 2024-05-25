@@ -29,8 +29,8 @@ module BlockRow = {
 
 module Blocks = {
   @react.component
-  let make = (~chainId, ~chainHeight, ~page) => {
-    let blocks = HyperSyncHooks.useBlocks(~chainId, ~chainHeight, ~pageIndex=page)
+  let make = (~chainId, ~chainHeight, ~page, ~pageSize) => {
+    let blocks = HyperSyncHooks.useBlocks(~chainId, ~chainHeight, ~pageIndex=page, ~pageSize)
 
     <table
       className="text-white border rounded border-2 border-primary p-2 m-2 bg-black bg-opacity-30">
@@ -39,7 +39,7 @@ module Blocks = {
           <th className="py-3 px-6 text-left"> {"Block"->React.string} </th>
           <th className="py-3 px-6 text-left"> {"Age"->React.string} </th>
           <th className="py-3 px-6 text-left"> {"Txn"->React.string} </th>
-          <th className="py-3 px-6 text-left"> {"Fee Recipient"->React.string} </th>
+          <th className="py-3 px-6 text-left"> {"Validated by"->React.string} </th>
           <th className="py-3 px-3 text-left"> {"Gas Used"->React.string} </th>
           <th className="py-3 px-3 text-left"> {"Gas Limit"->React.string} </th>
         </tr>
@@ -68,11 +68,12 @@ module TableOuter = {
   @react.component
   let make = (~chainId, ~chainHeight) => {
     let (page, setPage) = React.useState(() => 0)
+    let pageSize = 10
     <div className="overflow-x-auto">
-      <Blocks chainId chainHeight page />
+      <Blocks chainId chainHeight page pageSize />
       <Pagination
         activePage={page + 1}
-        numPages={chainHeight / 20 - 1}
+        numPages={chainHeight / pageSize - 1}
         onChange={newPage => setPage(_ => newPage - 1)}
       />
     </div>
@@ -82,12 +83,16 @@ module TableOuter = {
 @react.component
 let make = (~chainId) => {
   let chainHeight = HyperSyncHooks.useChainHeight(~chainId)
-  <div
-    className="flex flex-col items-center justify-center h-screen m-0 p-0 text-primary overflow-y-hidden">
-    {switch chainHeight {
-    | Data(chainHeight) => <TableOuter chainId chainHeight />
-    | Loading => "loading..."->React.string
-    | Err(_exn) => "Error"->React.string
-    }}
+
+  <div>
+    <div
+      className="flex flex-col items-center justify-center h-screen m-0 p-0 text-primary overflow-y-hidden">
+      <SearchBar onEnterPressed={searchVal => Js.log(searchVal)} />
+      {switch chainHeight {
+      | Data(chainHeight) => <TableOuter chainId chainHeight />
+      | Loading => "loading..."->React.string
+      | Err(_exn) => "Error"->React.string
+      }}
+    </div>
   </div>
 }

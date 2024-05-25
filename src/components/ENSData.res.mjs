@@ -3,7 +3,7 @@
 import * as React from "react";
 import * as Caml_option from "rescript/lib/es6/caml_option.js";
 
-async function tryUseEnsHandle(address) {
+async function tryResolveEnsHandle(address) {
   try {
     var resp = await fetch("https://ensdata.net/" + address, {
           method: "GET",
@@ -11,9 +11,8 @@ async function tryUseEnsHandle(address) {
                     "Content-type": "application/json"
                   }))
         });
-    console.log(resp);
     if (resp.ok) {
-      return (await resp.json()).ens;
+      return (await resp.json()).address;
     } else {
       return address;
     }
@@ -31,7 +30,7 @@ function ENSData(props) {
   var setDisplayAddress = match[1];
   var displayAddress = match[0];
   React.useEffect((function () {
-          tryUseEnsHandle(displayAddress).then(function (ensData) {
+          tryResolveEnsHandle(displayAddress).then(function (ensData) {
                 setDisplayAddress(function (param) {
                       return ensData;
                     });
@@ -44,7 +43,7 @@ function ENSData(props) {
 var make = ENSData;
 
 export {
-  tryUseEnsHandle ,
+  tryResolveEnsHandle ,
   make ,
 }
 /* react Not a pure module */
