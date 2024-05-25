@@ -23,6 +23,10 @@ In another tab, run the Vite dev server:
 pnpm run dev
 ```
 
+## Reporting Issues
+
+If you encounter any bugs or have suggestions for improvements, please open a gh issue. Provide as much detail as possible to help us understand and resolve the issue.
+
 ## Contributions
 
 We welcome contributions and efforts to make Open Explorer better! If you have any questions or need further assistance, feel free to reach out to the maintainers.
