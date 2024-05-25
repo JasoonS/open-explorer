@@ -1,3 +1,22 @@
+module Chains = {
+  type chain
+
+  @module external chains: Js.Dict.t<chain> = "viem/chains"
+}
+
+module Transport = {
+  type t
+  @module("viem") external http: unit => t = "http"
+}
+
+module Client = {
+  type t
+
+  @module("viem") external createPublicClient: {..} => t = "createPublicClient"
+
+  @send external getBalance: {..} => promise<bigint> = "getBalance"
+}
+
 module Address = {
   type t
 

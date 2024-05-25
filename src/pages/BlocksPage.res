@@ -1,6 +1,6 @@
 module BlockRow = {
   @react.component
-  let make = (~blockData: Queries.blockData, ~rowStyle: string) => {
+  let make = (~blockData: Queries.blockData, ~rowStyle: string, ~chainId: int) => {
     let {number: blockNumber, timestamp: blockTimestamp, transactionCount} = blockData
     <tr className=rowStyle>
       <td className="py-1 px-3 text-left">
@@ -16,10 +16,17 @@ module BlockRow = {
         <HyperLink href="#transactions_placeholder"> {transactionCount->React.int} </HyperLink>
       </td>
       <td className="py-1 px-3 text-left">
-        {DisplayAddress.ellipsifyMiddle(
-          ~inputString=blockData.miner->Viem.Address.toString,
-          ~precedingTrailingCharactersLength=10,
-        )->React.string}
+        <HyperLink.Page
+          page={Routes.Address({
+            chainId,
+            address: blockData.miner,
+            addressSubPage: Routes.Transactions,
+          })}>
+          {DisplayAddress.ellipsifyMiddle(
+            ~inputString=blockData.miner->Viem.Address.toString,
+            ~precedingTrailingCharactersLength=10,
+          )->React.string}
+        </HyperLink.Page>
       </td>
       <td className="py-1 px-3 text-left"> {blockData.gasUsed->BigInt.toString->React.string} </td>
       <td className="py-1 px-3 text-left"> {blockData.gasLimit->BigInt.toString->React.string} </td>
@@ -53,6 +60,7 @@ module Blocks = {
               key=blockData.hash
               blockData
               rowStyle={index->Int.mod(2) == 0 ? "bg-white bg-opacity-10" : ""}
+              chainId
             />
           )
           ->React.array
