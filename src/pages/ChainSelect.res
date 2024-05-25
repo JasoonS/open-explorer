@@ -74,7 +74,13 @@ let make = () => {
 
   <div className="flex flex-col items-center justify-center min-h-screen m-0 p-0 text-primary">
     <h1 className="text-2xl font-bold">
-      {"Select a blockchain and connection method"->React.string}
+      // <PrettyDisplay.QuestionTyped
+      //   prompt="Select a blockchain and connection method" answer=" some ?"
+      // />
+      {Time.useTypedCharactersString(
+        ~delay=50,
+        "Select a blockchain and connection method",
+      )->React.string}
     </h1>
     <div className="flex flex-col sm:flex-row sm:space-x-4 w-full max-w-md">
       <button
