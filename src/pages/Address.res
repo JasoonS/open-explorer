@@ -38,7 +38,7 @@ module Transactions = {
         {transactions
         ->Array.mapWithIndex((tx, index) =>
           <TransactionRow
-            symbol={symbolForAll->Option.getWithDefault("")}
+            symbol={symbolForAll->Option.getOr("")}
             key=tx.hash
             tx
             rowStyle={index->Int.mod(2) == 0 ? "bg-white bg-opacity-10" : ""}
@@ -192,5 +192,10 @@ let make = (~chainId, ~address: Viem.Address.t, ~addressSubPage: Routes.addressS
       <Overview address />
       <InfoTabs address chainId addressSubPage />
     </div>
+    // <div className="p-4 max-w-3xl mx-auto shadow-md max-h-screen-90 box-border">
+    //   // <div className="mb-4">
+    //   <Overview address />
+    //   <InfoTabs address chainId addressSubPage />
+    //   // </div>
   </div>
 }

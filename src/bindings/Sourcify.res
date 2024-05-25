@@ -71,7 +71,12 @@ module FilesByAddress = {
     content: string,
   }
 
-  type response = array<fileItem>
+  type response = {
+    error?: option<string>,
+    message?: option<string>,
+    status: string,
+    files?: option<array<fileItem>>,
+  }
 
   let getFiles = async (chain: string, address: string): response => {
     let url = endpoint ++ `/${chain}/${address}`

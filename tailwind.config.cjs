@@ -19,6 +19,10 @@ module.exports = {
         xxxs: ".5rem",
         xxs: ".6rem",
       },
+      maxHeight: {
+        'screen-90': '90vh',
+        'screen-70': '70vh',
+      }
     },
   },
   plugins: [],
