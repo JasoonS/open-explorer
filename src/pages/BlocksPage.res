@@ -102,7 +102,7 @@ let make = (~chainId) => {
 
   <div>
     <div
-      className="flex flex-col items-center justify-center h-screen m-0 p-0 text-primary overflow-y-hidden">
+      className="flex flex-col items-center justify-center h-screen m-0 p-0 text-primary overflow-y-hidden overflow-x-hidden">
       <SearchBar />
       {switch chainHeight {
       | Data(chainHeight) => <TableOuter chainId chainHeight />
