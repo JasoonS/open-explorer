@@ -53,14 +53,17 @@ let useChainHeight = (~chainId) => {
 
 let useBlocks = (~chainId, ~chainHeight, ~pageSize=20, ~pageIndex=0) => {
   let (blocks, setBlocks) = React.useState(_ => Loading)
+  let (isLoading, setIsLoading) = React.useState(() => false) // used for refetch loading without clearing the page
 
-  React.useEffect3(() => {
+  React.useEffect4(() => {
     let serverUrl = getServerUrl(~chainId)
     let toBlock = chainHeight - pageSize * pageIndex
     let fromBlock = toBlock - pageSize + 1
+    setIsLoading(_ => true)
     Queries.getBlocks(~serverUrl, ~fromBlock, ~toBlock)
     ->Promise.thenResolve(res => {
       setBlocks(_ => Data(res->Array.toReversed))
+      setIsLoading(_ => false)
     })
     ->Promise.catch(exn => {
       Console.error(exn)
@@ -71,13 +74,13 @@ let useBlocks = (~chainId, ~chainHeight, ~pageSize=20, ~pageIndex=0) => {
           | _ => Err(exn)
           },
       )
-
+      setIsLoading(_ => false)
       Promise.resolve()
     })
     ->ignore
 
     None
-  }, (chainId, chainHeight, pageSize))
+  }, (chainId, chainHeight, pageSize, pageIndex))
 
-  blocks
+  (blocks, isLoading)
 }

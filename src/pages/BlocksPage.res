@@ -1,7 +1,7 @@
 module BlockRow = {
   @react.component
   let make = (~blockData: Queries.blockData, ~rowStyle: string, ~chainId: int) => {
-    let {number: blockNumber, timestamp: blockTimestamp, transactionCount} = blockData
+    let {number: blockNumber, timestamp: blockTimestamp} = blockData
     <tr className=rowStyle>
       <td className="py-1 px-3 text-left">
         <HyperLink href="#block_placeholder"> {blockNumber->React.int} </HyperLink>
@@ -12,9 +12,9 @@ module BlockRow = {
         ->DateFns.formatDistanceToNowWithSeconds
         ->React.string}
       </td>
-      <td className="py-1 px-3 text-left">
-        <HyperLink href="#transactions_placeholder"> {transactionCount->React.int} </HyperLink>
-      </td>
+      // <td className="py-1 px-3 text-left">
+      //   <HyperLink href="#transactions_placeholder"> {transactionCount->React.int} </HyperLink>
+      // </td>
       <td className="py-1 px-3 text-left">
         <HyperLink.Page
           page={Routes.Address({
@@ -37,38 +37,46 @@ module BlockRow = {
 module Blocks = {
   @react.component
   let make = (~chainId, ~chainHeight, ~page, ~pageSize) => {
-    let blocks = HyperSyncHooks.useBlocks(~chainId, ~chainHeight, ~pageIndex=page, ~pageSize)
+    let (blocks, isLoading) = HyperSyncHooks.useBlocks(
+      ~chainId,
+      ~chainHeight,
+      ~pageIndex=page,
+      ~pageSize,
+    )
 
-    <table
-      className="text-white border rounded border-2 border-primary p-2 m-2 bg-black bg-opacity-30">
-      <thead className="m-10 uppercase bg-black">
-        <tr>
-          <th className="py-3 px-6 text-left"> {"Block"->React.string} </th>
-          <th className="py-3 px-6 text-left"> {"Age"->React.string} </th>
-          <th className="py-3 px-6 text-left"> {"Txn"->React.string} </th>
-          <th className="py-3 px-6 text-left"> {"Validated by"->React.string} </th>
-          <th className="py-3 px-3 text-left"> {"Gas Used"->React.string} </th>
-          <th className="py-3 px-3 text-left"> {"Gas Limit"->React.string} </th>
-        </tr>
-      </thead>
-      <tbody>
-        {switch blocks {
-        | Data(blocks) =>
-          blocks
-          ->Array.mapWithIndex((blockData, index) =>
-            <BlockRow
-              key=blockData.hash
-              blockData
-              rowStyle={index->Int.mod(2) == 0 ? "bg-white bg-opacity-10" : ""}
-              chainId
-            />
-          )
-          ->React.array
-        | Loading => <tr> {"loading..."->React.string} </tr>
-        | Err(_exn) => <tr> {"Error"->React.string} </tr>
-        }}
-      </tbody>
-    </table>
+    <div>
+      {isLoading ? <Loader.Pepe /> : React.null}
+      <table
+        className="text-white border rounded border-2 border-primary p-2 m-2 bg-black bg-opacity-30">
+        <thead className="m-10 uppercase bg-black">
+          <tr>
+            <th className="py-3 px-6 text-left"> {"Block"->React.string} </th>
+            <th className="py-3 px-6 text-left"> {"Age"->React.string} </th>
+            // <th className="py-3 px-6 text-left"> {"Txn"->React.string} </th>
+            <th className="py-3 px-6 text-left"> {"Validated by"->React.string} </th>
+            <th className="py-3 px-3 text-left"> {"Gas Used"->React.string} </th>
+            <th className="py-3 px-3 text-left"> {"Gas Limit"->React.string} </th>
+          </tr>
+        </thead>
+        <tbody>
+          {switch blocks {
+          | Data(blocks) =>
+            blocks
+            ->Array.mapWithIndex((blockData, index) =>
+              <BlockRow
+                key=blockData.hash
+                blockData
+                rowStyle={index->Int.mod(2) == 0 ? "bg-white bg-opacity-10" : ""}
+                chainId
+              />
+            )
+            ->React.array
+          | Loading => <tr> {"loading..."->React.string} </tr>
+          | Err(_exn) => <tr> {"Error"->React.string} </tr>
+          }}
+        </tbody>
+      </table>
+    </div>
   }
 }
 

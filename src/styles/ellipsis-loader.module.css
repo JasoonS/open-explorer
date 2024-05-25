@@ -1,0 +1,96 @@
+/* Inspired by https://codepen.io/whereverpanda, tweaked for float */
+
+.ellipsis {
+  display: block;
+  width: 50px;
+  margin: 0px auto;
+  position: relative;
+}
+.ellipsis-inner {
+  display: block;
+  position: relative;
+  height: 10px;
+  width: 10px;
+  border-radius: 50%;
+  background: #578C39;
+  opacity: 0;
+  transform-origin: center center;
+  -webkit-animation: dot 3s linear infinite;
+  animation: dot 3s linear infinite;
+}
+
+.ellipsis:before {
+  display: inline-block;
+  position: absolute;
+  content: "";
+  left: 14px;
+  height: 10px;
+  width: 10px;
+  border-radius: 50%;
+  background: #578C39;
+  opacity: 0;
+  transform-origin: center center;
+  -webkit-animation: dot 3s linear infinite;
+  animation: dot 3s linear infinite;
+  -webkit-animation-delay: 1s;
+  animation-delay: 1s;
+}
+
+.ellipsis:after {
+  display: inline-block;
+  position: absolute;
+  content: "";
+  left: 28px;
+  height: 10px;
+  width: 10px;
+  opacity: 0;
+  border-radius: 50%;
+  background: #578C39;
+  transform-origin: center center;
+  -webkit-animation: dot 3s linear infinite;
+  animation: dot 3s linear infinite;
+  -webkit-animation-delay: 2s;
+  animation-delay: 2s;
+  top: 0;
+}
+.ellipsis-small.ellipsis {
+  margin: 7px auto;
+}
+
+.ellipsis-small .ellipsis-inner,
+.ellipsis-small.ellipsis:before,
+.ellipsis-small.ellipsis:after {
+  height: 5px;
+  width: 5px;
+}
+
+.ellipsis-small.ellipsis:before {
+  left: 9px;
+}
+
+.ellipsis-small.ellipsis:after {
+  left: 18px;
+}
+
+@-webkit-keyframes dot {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes dot {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
