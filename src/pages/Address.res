@@ -70,15 +70,8 @@ let makeClientFromChainId = chainId => {
 
 module Overview = {
   @react.component
-  let make = (~address: Viem.Address.t) => {
+  let make = (~address: Viem.Address.t, ~client: Viem.Client.t) => {
     let url = RescriptReactRouter.useUrl()
-    let chainId =
-      url.path
-      ->List.head
-      ->Option.getOr("1")
-      ->Int.fromString
-      ->Option.getOr(1) // i know, tired
-    let client = makeClientFromChainId(chainId)
     let (balance, setBalance) = React.useState(() => "")
     let (ensAddress, setEnsAddress) = React.useState(() => None)
 
@@ -87,6 +80,7 @@ module Overview = {
       ->getBalance(address)
       ->Promise.thenResolve(bal => setBalance(_ => bal->Int.toString))
       ->ignore
+
       None
     })
 
@@ -129,7 +123,24 @@ module Overview = {
 
 module InfoTabs = {
   @react.component
-  let make = (~chainId, ~address: Viem.Address.t, ~addressSubPage: Routes.addressSubPage) => {
+  let make = (
+    ~chainId,
+    ~address: Viem.Address.t,
+    ~addressSubPage: Routes.addressSubPage,
+    ~client: Viem.Client.t,
+  ) => {
+    let (isContract, setIsContract) = React.useState(() => true) // Default to true just to be safe.
+
+    React.useEffect0(() => {
+      let checkIsContract = async () => {
+        let size = await client->Viem.getContractSize(address)
+        setIsContract(_ => size > 0)
+      }
+      checkIsContract()->ignore
+
+      None
+    })
+
     // Dummy data for overview and transactions
     let transactions: array<transaction> = [
       {hash: "0x1", from: "0x123", to: "0x456", value: "1.0", timestamp: "2024-05-25 12:34:56"},
@@ -160,13 +171,15 @@ module InfoTabs = {
           onClick={_ => pushSubPage(Transactions)}>
           {React.string("Transactions")}
         </button>
-        <button
-          className={`py-2 px-4 ${addressSubPage === Routes.Contract
-              ? "border-b-2 border-blue-500"
-              : ""}`}
-          onClick={_ => pushSubPage(Contract)}>
-          {React.string("Contract")}
-        </button>
+        {isContract
+          ? <button
+              className={`py-2 px-4 ${addressSubPage === Routes.Contract
+                  ? "border-b-2 border-blue-500"
+                  : ""}`}
+              onClick={_ => pushSubPage(Contract)}>
+              {React.string("Contract")}
+            </button>
+          : React.null}
         <button
           className={`py-2 px-4 ${addressSubPage === Erc20Transactions
               ? "border-b-2 border-blue-500"
@@ -177,7 +190,13 @@ module InfoTabs = {
       </div>
       {switch addressSubPage {
       | Transactions => <Transactions transactions symbolForAll="ETH" />
-      | Contract => <Contract chainId address />
+      | Contract =>
+        if isContract {
+          <Contract chainId address />
+        } else {
+          pushSubPage(Transactions)
+          React.null
+        }
       | Erc20Transactions => <Transactions transactions=erc20Transfers />
       | _ => React.null
       }}
@@ -186,11 +205,13 @@ module InfoTabs = {
 }
 @react.component
 let make = (~chainId, ~address: Viem.Address.t, ~addressSubPage: Routes.addressSubPage) => {
+  let client = makeClientFromChainId(chainId)
+
   <div
     className="flex flex-col items-center justify-center h-screen m-0 p-0 text-primary overflow-y-hidden">
     <div className="mb-4">
-      <Overview address />
-      <InfoTabs address chainId addressSubPage />
+      <Overview address client />
+      <InfoTabs address chainId addressSubPage client />
     </div>
     // <div className="p-4 max-w-3xl mx-auto shadow-md max-h-screen-90 box-border">
     //   // <div className="mb-4">

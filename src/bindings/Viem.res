@@ -29,6 +29,7 @@ module Client = {
     "createPublicClient"
 
   @send external getBalance: (t, {"address": address}) => promise<bigint> = "getBalance"
+  @module("viem") external getCode: (t, address) => Js.Promise.t<string> = "getCode"
 }
 
 module Address = {
@@ -54,6 +55,12 @@ module Address = {
       },
     serializer: toString,
   })
+}
+
+let getContractSize = async (client: Client.t, address: address) => {
+  let codeResult = await Client.getCode(client, address)
+  let size = (String.length(codeResult) - 2) / 2
+  size
 }
 
 module Topic = {
