@@ -51,6 +51,18 @@ let tryResolveEnsHandle = async ensHandle => {
   | _ => Js.Exn.raiseError("Unable to resolve ens handle")
   }
 }
+// todo, having cors issues with, also make this more related to resolvind ens handles
+let tryResolveEnsHandleFromAddress = async address => {
+  try {
+    let resp = await fetch(`https://ensdata.net/${address}`)
+
+    let json = await resp->json
+
+    json.ens
+  } catch {
+  | _ => Js.Exn.raiseError("Unable to resolve ens handle")
+  }
+}
 
 @react.component
 let make = (~address) => {
