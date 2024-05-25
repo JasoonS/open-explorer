@@ -44,7 +44,7 @@ let getBlocks = async (~serverUrl, ~fromBlock, ~toBlock) => {
         GasUsed,
         Timestamp,
         // Uncles,
-        BaseFeePerGas,
+        // BaseFeePerGas, //Not working
       ],
       transaction: [Hash],
     },
@@ -74,6 +74,7 @@ let getBlocks = async (~serverUrl, ~fromBlock, ~toBlock) => {
               gasLimit,
               gasUsed,
               timestamp,
+              // baseFeePerGas, //not working
             } => {
               number,
               hash,
@@ -90,6 +91,7 @@ let getBlocks = async (~serverUrl, ~fromBlock, ~toBlock) => {
               gasLimit,
               gasUsed,
               timestamp,
+              // baseFeePerGas, //not working
               transactionCount: transactions->Array.length,
             }
           | block =>

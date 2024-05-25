@@ -1,17 +1,19 @@
-module Block = {
+module BlockRow = {
   @react.component
   let make = (~blockData: Queries.blockData) => {
     let {number: blockNumber, timestamp: blockTimestamp, transactionCount} = blockData
-    <div className="flex">
-      <div className="flex flex-col">
-        <HyperLink href="#"> {blockNumber->React.int} </HyperLink>
-        <div>
-          <span> {"timestamp: "->React.string} </span>
-          {blockTimestamp->BigInt.toString->React.string}
-        </div>
-      </div>
-      <div> {transactionCount->React.int} </div>
-    </div>
+    <tr>
+      <td>
+        <HyperLink href="#block_placeholder"> {blockNumber->React.int} </HyperLink>
+      </td>
+      <td> {blockTimestamp->BigInt.toString->React.string} </td>
+      <td>
+        <HyperLink href="#transactions_placeholder"> {transactionCount->React.int} </HyperLink>
+      </td>
+      <td> {blockData.miner->Viem.Address.toString->React.string} </td>
+      <td> {blockData.gasUsed->BigInt.toString->React.string} </td>
+      <td> {blockData.gasLimit->BigInt.toString->React.string} </td>
+    </tr>
   }
 }
 
@@ -33,14 +35,22 @@ module Blocks = {
   let make = (~serverUrl, ~chainHeight) => {
     let blocks = HyperSyncHooks.useBlocks(~serverUrl, ~chainHeight)
 
-    <div>
+    <table>
+      <tr>
+        <th> {"Block"->React.string} </th>
+        <th> {"Age"->React.string} </th>
+        <th> {"Txn"->React.string} </th>
+        <th> {"Fee Recipient"->React.string} </th>
+        <th> {"Gas Used"->React.string} </th>
+        <th> {"Gas Limit"->React.string} </th>
+      </tr>
       {switch blocks {
       | Data(blocks) =>
-        blocks->Array.map(blockData => <Block key=blockData.hash blockData />)->React.array
+        blocks->Array.map(blockData => <BlockRow key=blockData.hash blockData />)->React.array
       | Loading => "loading..."->React.string
       | Err(_exn) => "Error"->React.string
       }}
-    </div>
+    </table>
   }
 }
 
