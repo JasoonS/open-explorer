@@ -1,6 +1,6 @@
 module BlockRow = {
   @react.component
-  let make = (~blockData: Queries.blockData, ~rowStyle: string, ~chainId: int) => {
+  let make = (~blockData: Queries.Blocks.blockData, ~rowStyle: string, ~chainId: int) => {
     let {number: blockNumber, timestamp: blockTimestamp} = blockData
     <tr className=rowStyle>
       <td className="py-1 px-3 text-left">

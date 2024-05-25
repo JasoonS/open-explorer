@@ -14,7 +14,6 @@ let executeFetchRequest = async (
   ~method: Fetch.method,
   ~bodyAndSchema: option<('body, S.t<'body>)>=?,
   ~responseSchema: S.t<'data>,
-  (),
 ): result<'data, exn> => {
   try {
     open Fetch

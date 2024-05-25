@@ -60,7 +60,7 @@ let useBlocks = (~chainId, ~chainHeight, ~pageSize=20, ~pageIndex=0) => {
     let toBlock = chainHeight - pageSize * pageIndex
     let fromBlock = toBlock - pageSize + 1
     setIsLoading(_ => true)
-    Queries.getBlocks(~serverUrl, ~fromBlock, ~toBlock)
+    Queries.Blocks.getBlocks(~serverUrl, ~fromBlock, ~toBlock)
     ->Promise.thenResolve(res => {
       setBlocks(_ => Data(res->Array.toReversed))
       setIsLoading(_ => false)
@@ -83,4 +83,31 @@ let useBlocks = (~chainId, ~chainHeight, ~pageSize=20, ~pageIndex=0) => {
   }, (chainId, chainHeight, pageSize, pageIndex))
 
   (blocks, isLoading)
+}
+
+let useTransaction = (~chainId, ~txHash) => {
+  let (tx, setTx) = React.useState(_ => Loading)
+
+  React.useEffect2(() => {
+    Queries.Transaction.getTransaction(~chainId, ~txHash)
+    ->Promise.thenResolve(res => {
+      switch res {
+      | Ok(txData) => setTx(_ => Data(txData))
+      | Error(exn) =>
+        Console.error(exn)
+        setTx(
+          prev =>
+            switch prev {
+            | Data(txData) => Data(txData)
+            | _ => Err(exn)
+            },
+        )
+      }
+    })
+    ->ignore
+
+    None
+  }, (chainId, txHash))
+
+  tx
 }
