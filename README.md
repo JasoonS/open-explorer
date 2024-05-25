@@ -53,6 +53,7 @@ pnpm run dev
 
 - [ ] RPC rotation mode for maximum obfiscation
 - [ ] "Contract verification" for local network blockchain development
+- [ ] Solve cors issues with ensdata & sourcify
 
 ## Reporting Issues
 

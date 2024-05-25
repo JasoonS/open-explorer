@@ -80,12 +80,25 @@ module Overview = {
       ->Option.getOr(1) // i know, tired
     let client = makeClientFromChainId(chainId)
     let (balance, setBalance) = React.useState(() => "")
+    let (ensAddress, setEnsAddress) = React.useState(() => None)
 
     React.useEffect0(() => {
       client
       ->getBalance(address)
       ->Promise.thenResolve(bal => setBalance(_ => bal->Int.toString))
       ->ignore
+      None
+    })
+
+    React.useEffect0(() => {
+      let _ =
+        address
+        ->Viem.Address.toString
+        ->ENSDataCustomFetch.tryResolveEnsHandleFromAddress
+        ->Promise.then(ensAddress => {
+          setEnsAddress(_ => Some(ensAddress))
+          None->Promise.resolve
+        })
       None
     })
 
@@ -96,6 +109,14 @@ module Overview = {
         {address->Viem.Address.toString->React.string}
         <CopyButton textToCopy={address->Viem.Address.toString} />
       </p>
+      {switch ensAddress {
+      | Some(ensAddress) =>
+        <p>
+          <strong> {React.string("ENS:")} </strong>
+          {ensAddress->React.string}
+        </p>
+      | None => React.null
+      }}
       <p>
         <strong> {React.string("Balance:")} </strong>
         {balance->React.string}
@@ -165,7 +186,8 @@ module InfoTabs = {
 }
 @react.component
 let make = (~chainId, ~address: Viem.Address.t, ~addressSubPage: Routes.addressSubPage) => {
-  <div className="p-4 max-w-3xl mx-auto shadow-md">
+  <div
+    className="flex flex-col items-center justify-center h-screen m-0 p-0 text-primary overflow-y-hidden">
     <div className="mb-4">
       <Overview address />
       <InfoTabs address chainId addressSubPage />
