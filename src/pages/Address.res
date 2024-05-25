@@ -6,11 +6,6 @@ type transaction = {
   timestamp: string,
 }
 
-type contract = {
-  name: string,
-  address: string,
-}
-
 module TransactionRow = {
   @react.component
   let make = (~tx: transaction, ~rowStyle: string, ~symbol) => {
@@ -81,10 +76,6 @@ module InfoTabs = {
       {hash: "0x1", from: "0x123", to: "0x456", value: "1.0", timestamp: "2024-05-25 12:34:56"},
       {hash: "0x2", from: "0x789", to: "0xabc", value: "2.5", timestamp: "2024-05-24 11:22:33"},
     ]
-    let contracts = [
-      {name: "ContractA", address: "0xContractA"},
-      {name: "ContractB", address: "0xContractB"},
-    ]
     let erc20Transfers = [
       {
         hash: "0x3",
@@ -115,7 +106,7 @@ module InfoTabs = {
               ? "border-b-2 border-blue-500"
               : ""}`}
           onClick={_ => pushSubPage(Contract)}>
-          {React.string("Contracts")}
+          {React.string("Contract")}
         </button>
         <button
           className={`py-2 px-4 ${addressSubPage === Erc20Transactions
@@ -127,25 +118,8 @@ module InfoTabs = {
       </div>
       {switch addressSubPage {
       | Transactions => <Transactions transactions symbolForAll="ETH" />
-      | Contract =>
-        <div>
-          <h2 className="text-lg font-bold my-4"> {React.string("Verified Contracts")} </h2>
-          {contracts
-          ->Array.map(contract =>
-            <div key=contract.address className="p-4 border rounded-md mb-2">
-              <p>
-                <strong> {React.string("Name:")} </strong>
-                {contract.name->React.string}
-              </p>
-              <p>
-                <strong> {React.string("Address:")} </strong>
-                {contract.address->React.string}
-              </p>
-            </div>
-          )
-          ->React.array}
-        </div>
-      | Erc20Transactions => <Transactions transactions />
+      | Contract => <Contract chainId address />
+      | Erc20Transactions => <Transactions transactions=erc20Transfers />
       | _ => React.null
       }}
     </>

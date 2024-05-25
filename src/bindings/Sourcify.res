@@ -21,7 +21,7 @@ module VerifyEtherscan = {
 
   type response = {result: array<responseItem>}
 
-  let verify = async (data: requestBody) => {
+  let verify = async (data: requestBody): response => {
     open Fetch
 
     let response = await fetch(
@@ -35,12 +35,12 @@ module VerifyEtherscan = {
       },
     )
 
-    await response->Response.json
+    (await response->Fetch.Response.json)->Obj.magic
   }
 }
 
 module CheckByAddresses = {
-  let endpoint = rootDomain ++ "/check-by-addresses"
+  let endpoint = rootDomain ++ "/check-all-by-addresses"
 
   type responseChain = {
     chainId: string,
@@ -49,23 +49,21 @@ module CheckByAddresses = {
 
   type responseItem = {
     address: string,
-    chainIds: array<string>,
     status: option<string>,
   }
 
   type response = array<responseItem>
 
-  let check = async (addresses: string, chainIds: string) => {
-    open Fetch
-
+  let check = async (addresses: string, chainIds: string): response => {
     let queryParams = `?addresses=${addresses}&chainIds=${chainIds}`
-    let response = await Fetch.get(endpoint ++ queryParams)
-    await response->Fetch.Response.json
+    let responseRaw = await Fetch.get(endpoint ++ queryParams)
+    let response = await responseRaw->Fetch.Response.json
+    response->Obj.magic
   }
 }
 
 module FilesByAddress = {
-  let endpoint = rootDomain ++ "/files"
+  let endpoint = rootDomain ++ "/files/any"
 
   type fileItem = {
     name: string,
@@ -76,11 +74,9 @@ module FilesByAddress = {
   type response = array<fileItem>
 
   let getFiles = async (chain: string, address: string): response => {
-    open Fetch
-
     let url = endpoint ++ `/${chain}/${address}`
     let response = await Fetch.get(url)
-    await response->Obj.magic
+    (await response->Fetch.Response.json)->Obj.magic
   }
 }
 
@@ -111,8 +107,8 @@ module Examples = {
     // Js.log2("files by address", response->Array.map(item => item.name))
     Js.log2("files by address", response)
   }
-  //
-  await testVerifyEtherscan()
-  // await testCheckByAddresses()
-  await testFilesByAddress()
+  // //
+  // await testVerifyEtherscan()
+  // // await testCheckByAddresses()
+  // await testFilesByAddress()
 }

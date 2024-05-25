@@ -23,12 +23,12 @@ var VerifyEtherscan = {
   verify: verify
 };
 
-var endpoint$1 = rootDomain + "/check-by-addresses";
+var endpoint$1 = rootDomain + "/check-all-by-addresses";
 
 async function check(addresses, chainIds) {
   var queryParams = "?addresses=" + addresses + "&chainIds=" + chainIds;
-  var response = await fetch(endpoint$1 + queryParams);
-  return await response.json();
+  var responseRaw = await fetch(endpoint$1 + queryParams);
+  return await responseRaw.json();
 }
 
 var CheckByAddresses = {
@@ -36,11 +36,12 @@ var CheckByAddresses = {
   check: check
 };
 
-var endpoint$2 = rootDomain + "/files";
+var endpoint$2 = rootDomain + "/files/any";
 
 async function getFiles(chain, address) {
   var url = endpoint$2 + ("/" + chain + "/" + address);
-  return await await fetch(url);
+  var response = await fetch(url);
+  return await response.json();
 }
 
 var FilesByAddress = {
@@ -66,10 +67,6 @@ async function testFilesByAddress() {
   console.log("files by address", response);
 }
 
-await testVerifyEtherscan();
-
-await testFilesByAddress();
-
 var Examples = {
   testVerifyEtherscan: testVerifyEtherscan,
   testCheckByAddresses: testCheckByAddresses,
@@ -83,4 +80,4 @@ export {
   FilesByAddress ,
   Examples ,
 }
-/*  Not a pure module */
+/* No side effect */
