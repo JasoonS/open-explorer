@@ -7,10 +7,11 @@ let make = () => {
   | ChainSelect => <ChainSelect />
   | Search({chainId}) => <p> {"search"->React.string} </p>
   | BlocksPage({chainId}) => <BlocksPage chainId />
-  | BlockPage({chainId, blockNumber}) => <BlockPage chainId blockNumber/>
+  | BlockPage({chainId, blockNumber}) => <BlockPage chainId blockNumber />
   | Address({chainId, address, addressSubPage}) => <Address chainId address addressSubPage />
   | TransactionPage({chainId, txHash}) => <TransactionPage chainId={chainId->Int.toString} txHash />
   | Unknown => <p> {"unknown"->React.string} </p>
+  | TestPage({text}) => <p> {`Test page with text: ${text}`->React.string} </p>
   | Error(error) => <p> {error->React.string} </p>
   }
 }

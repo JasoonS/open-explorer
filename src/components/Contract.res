@@ -13,8 +13,9 @@ let make = (~chainId: int, ~address: Viem.Address.t) => {
   let fetchVerifiedContracts = async () => {
     let result = await Sourcify.FilesByAddress.getFiles(chainId->Int.toString, addressStr)
     switch result {
-    | {error: Some(error)} => setContracts(_ => NotVerified(error))
-    | {files: Some(files)} => setContracts(_ => Verified(files))
+    | {error, _} => setContracts(_ => NotVerified(error))
+    | {files} => setContracts(_ => Verified(files))
+    | _ => setContracts(_ => NotVerified("No files for verified contract found."))
     }
   }
 

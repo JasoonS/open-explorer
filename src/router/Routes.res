@@ -13,6 +13,7 @@ type page =
   | Address({chainId: int, address: Viem.Address.t, addressSubPage: addressSubPage})
   | TransactionPage({chainId: int, txHash: string})
   | Unknown
+  | TestPage({text: string})
   | Error(string)
 
 let pageToUrlString = (pageInfo: page): string => {
@@ -59,9 +60,10 @@ let usePage = () => {
       | list{"block", blockNumberStr} =>
         switch blockNumberStr->Int.fromString {
         | Some(blockNumber) => BlockPage({chainId, blockNumber})
-        | None =>Error("The block number is invalid, it must be an integer")
+        | None => Error("The block number is invalid, it must be an integer")
         }
       | list{} => BlocksPage({chainId: chainId})
+      | list{test, text} => TestPage({text: text})
       | _ => Unknown
       }
     | None => Error("The chainId is invalid, it must be an integer")

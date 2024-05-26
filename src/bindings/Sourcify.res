@@ -72,10 +72,10 @@ module FilesByAddress = {
   }
 
   type response = {
-    error?: option<string>,
+    error?: string,
     message?: option<string>,
     status: string,
-    files?: option<array<fileItem>>,
+    files?: array<fileItem>,
   }
 
   let getFiles = async (chain: string, address: string): response => {
