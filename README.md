@@ -54,6 +54,8 @@ pnpm run dev
 - [ ] RPC rotation mode for maximum obfiscation
 - [ ] "Contract verification" for local network blockchain development
 - [ ] Solve cors issues with ensdata & sourcify
+- [ ] Hash routing so that links can be shared
+- [ ] Firehose & EthArchive integration
 
 ## Reporting Issues
 
