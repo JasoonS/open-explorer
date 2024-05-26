@@ -12,11 +12,11 @@ module TransactionDetailsH = {
   @react.component
   let make = (~chainId: int, ~txHash) => {
     let (transactionInfo, setTransactionInfo) = React.useState(() => Loading)
+    let (rpcUrl, _) = LocalStorageHooks.useLocalRpcStorage()
 
-    React.useEffect2(() => {
-      Queries.Transaction.getTransaction(~chainId, ~txHash)
+    React.useEffect3(() => {
+      Queries.Transaction.getTransaction(~chainId, ~txHash, ~rpcUrl)
       ->Promise.then(transactionInfo => {
-        Console.log(transactionInfo)
         switch transactionInfo {
         | Ok(transaction) => setTransactionInfo(_ => Data(transaction))
         | Error(err) => setTransactionInfo(_ => Error("Error fetching transaction"))
@@ -30,13 +30,19 @@ module TransactionDetailsH = {
       })
       ->ignore
       None
-    }, (chainId, txHash))
+    }, (chainId, txHash, rpcUrl))
 
     switch transactionInfo {
     | Loading => <Loader.Pepe />
-    | Error(err) => <div> {React.string(err)} </div>
+    | Error(err) => {
+        Console.log("Error fetching transaction display")
+        <div>
+          <p> {React.string("err")} </p>
+          <p> {React.string(err)} </p>
+        </div>
+      }
     | Data(transactionInfo) =>
-      <div>
+      <div className="max-w-screen">
         <p> {React.string("Transaction details")} </p>
         <p>
           {"blockHash: "->React.string}
@@ -65,7 +71,7 @@ module TransactionDetailsH = {
           {"hash: "->React.string}
           {transactionInfo.hash->React.string}
         </p>
-        <p>
+        <p className="max-w-[600px] text-wrap">
           {"input: "->React.string}
           {transactionInfo.input->React.string}
         </p>

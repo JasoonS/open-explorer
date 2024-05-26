@@ -202,8 +202,13 @@ Gas Price:
     }
   )
 
-  let getTransaction = async (~chainId, ~txHash) => {
-    let hyperRpcUrl = `https://${chainId->Int.toString}.rpc.hypersync.xyz`
+  let getTransaction = async (~chainId, ~txHash, ~rpcUrl: option<string>) => {
+    let hyperSyncUrl = `https://${chainId->Int.toString}.rpc.hypersync.xyz`
+
+    let selectedRpcUrl = switch rpcUrl {
+    | Some(url) => url != "" ? url : hyperSyncUrl
+    | None => hyperSyncUrl
+    }
 
     let body = {
       "method": "eth_getTransactionByHash",
@@ -213,7 +218,7 @@ Gas Price:
     }
 
     switch await QueryHelpers.executeFetchRequest(
-      ~endpoint=hyperRpcUrl,
+      ~endpoint=selectedRpcUrl,
       ~method=#POST,
       ~bodyAndSchema=(body, rpcBodySchema),
       ~responseSchema=txRpcResSchema,

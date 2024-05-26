@@ -1,5 +1,3 @@
-type dataSource = Rpc | HyperSync | EthArchive | Firehose
-
 // Define the supported chains
 let supportedChains: Js.Dict.t<int> = {
   "Amoy": 80002,
@@ -68,9 +66,17 @@ let supportedChains: Js.Dict.t<int> = {
 
 @react.component
 let make = () => {
-  let (selectedDataSource, setSelectedDataSource) = React.useState(() => HyperSync)
+  let (selectedDataSource, setSelectedDataSource) = React.useState(() => DataSource.Rpc)
   let (selectedChain, setSelectedChain) = React.useState(() => "")
-  let (rpcUrl, setRpcUrl) = React.useState(() => "")
+  let (rpcUrl, setRpcUrl) = React.useState(() => "https://eth.llamarpc.com")
+  let (_, setLocalRpc) = LocalStorageHooks.useLocalRpcStorage()
+  let (_, setDataSource) = LocalStorageHooks.useDataSourceStorage()
+
+  // reset this to
+  React.useEffect1(() => {
+    setLocalRpc("")
+    None
+  }, [])
 
   <div
     className="flex flex-col items-center justify-center h-screen m-0 p-0 text-primary overflow-y-hidden">
@@ -84,17 +90,30 @@ let make = () => {
     <div className="flex flex-col sm:flex-row sm:space-x-4 w-full justify-center my-4">
       <Buttons
         text="HyperSync"
-        onClick={_ => setSelectedDataSource(_ => HyperSync)}
+        onClick={_ => {
+          let strDataSource = DataSource.dataSourceToString(DataSource.HyperSync)
+          Js.log(strDataSource)
+          Js.log(strDataSource)
+          setDataSource(strDataSource) // todo
+          setSelectedDataSource(_ => HyperSync)
+        }}
         isActive={selectedDataSource == HyperSync}
       />
       <Buttons
         text="RPC URL"
-        onClick={_ => setSelectedDataSource(_ => Rpc)}
+        onClick={_ => {
+          "DataSource.dataSourceToString(DataSource.Rpc)"->Js.log
+          DataSource.dataSourceToString(DataSource.Rpc)->Js.log
+          setDataSource(DataSource.dataSourceToString(DataSource.Rpc))
+          setSelectedDataSource(_ => Rpc)
+        }}
         isActive={selectedDataSource == Rpc}
       />
       <Buttons
         text="Firehose"
-        onClick={_ => setSelectedDataSource(_ => Firehose)}
+        onClick={_ => {
+          setSelectedDataSource(_ => Firehose)
+        }}
         isActive={selectedDataSource == Firehose}
       />
       <Buttons
@@ -110,7 +129,11 @@ let make = () => {
           className="mt-1 block px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm flex-1"
           type_="text"
           value=rpcUrl
-          onChange={e => setRpcUrl(JsxEventU.Form.target(e)["value"])}
+          onChange={e => {
+            let rpcSet = JsxEventU.Form.target(e)["value"]
+            setLocalRpc(rpcSet)
+            setRpcUrl(rpcSet)
+          }}
           placeholder="enter custom RPC URL"
         />
         <input
@@ -123,6 +146,8 @@ let make = () => {
         <button
           className="ml-4 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
           onClick={_ => {
+            setDataSource(DataSource.dataSourceToString(DataSource.Rpc))
+            setLocalRpc(rpcUrl)
             RescriptReactRouter.push(`/${selectedChain}`)
           }}>
           {"submit"->React.string}

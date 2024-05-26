@@ -100,14 +100,22 @@ module TableOuter = {
 let make = (~chainId) => {
   let chainHeight = HyperSyncHooks.useChainHeight(~chainId)
 
+  let (dataSource, _) = LocalStorageHooks.useDataSourceStorage()
+
   <div>
     <div
       className="flex flex-col items-center justify-center h-screen m-0 p-0 text-primary overflow-y-hidden overflow-x-hidden">
       <SearchBar />
-      {switch chainHeight {
-      | Data(chainHeight) => <TableOuter chainId chainHeight />
-      | Loading => "loading..."->React.string
-      | Err(_exn) => "Error"->React.string
+      {switch dataSource {
+      | HyperSync =>
+        <>
+          {switch chainHeight {
+          | Data(chainHeight) => <TableOuter chainId chainHeight />
+          | Loading => "loading..."->React.string
+          | Err(_exn) => "Error"->React.string
+          }}
+        </>
+      | _ => React.null
       }}
     </div>
   </div>
