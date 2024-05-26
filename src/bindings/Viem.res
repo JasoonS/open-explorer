@@ -29,7 +29,8 @@ module Client = {
     "createPublicClient"
 
   @send external getBalance: (t, {"address": address}) => promise<bigint> = "getBalance"
-  @module("viem") external getCode: (t, address) => Js.Promise.t<string> = "getCode"
+  @send
+  external getBytecode: (t, {"address": address}) => Js.Promise.t<option<string>> = "getBytecode"
 }
 
 module Address = {
@@ -58,7 +59,8 @@ module Address = {
 }
 
 let getContractSize = async (client: Client.t, address: address) => {
-  let codeResult = await Client.getCode(client, address)
+  let optCodeResult = await Client.getBytecode(client, {"address": address})
+  let codeResult = optCodeResult->Option.getOr("0x")
   let size = (String.length(codeResult) - 2) / 2
   size
 }
