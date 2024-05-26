@@ -12,6 +12,9 @@
       "in-source": true
     }
   ],
+  "warnings": {
+    "number": "-27-26"
+  },
   "suffix": ".res.mjs",
   "bs-dependencies": [
     "@rescript/core",
@@ -19,7 +22,10 @@
     "rescript-schema",
     "@glennsl/rescript-fetch"
   ],
-  "bsc-flags": ["-open RescriptCore", "-open RescriptSchema"],
+  "bsc-flags": [
+    "-open RescriptCore",
+    "-open RescriptSchema"
+  ],
   "jsx": {
     "version": 4
   }
