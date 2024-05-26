@@ -68,7 +68,7 @@ var supportedChains = {
 
 function ChainSelect(props) {
   var match = React.useState(function () {
-        return "Rpc";
+        return "HyperSync";
       });
   var setSelectedDataSource = match[1];
   var selectedDataSource = match[0];
@@ -182,8 +182,6 @@ function ChainSelect(props) {
                               text: "HyperSync",
                               onClick: (function () {
                                   var strDataSource = DataSource.dataSourceToString("HyperSync");
-                                  console.log(strDataSource);
-                                  console.log(strDataSource);
                                   setDataSource(strDataSource);
                                   setSelectedDataSource(function (param) {
                                         return "HyperSync";
@@ -194,8 +192,6 @@ function ChainSelect(props) {
                         JsxRuntime.jsx(Buttons.make, {
                               text: "RPC URL",
                               onClick: (function () {
-                                  console.log("DataSource.dataSourceToString(DataSource.Rpc)");
-                                  console.log(DataSource.dataSourceToString("Rpc"));
                                   setDataSource(DataSource.dataSourceToString("Rpc"));
                                   setSelectedDataSource(function (param) {
                                         return "Rpc";

@@ -66,7 +66,7 @@ let supportedChains: Js.Dict.t<int> = {
 
 @react.component
 let make = () => {
-  let (selectedDataSource, setSelectedDataSource) = React.useState(() => DataSource.Rpc)
+  let (selectedDataSource, setSelectedDataSource) = React.useState(() => DataSource.HyperSync)
   let (selectedChain, setSelectedChain) = React.useState(() => "")
   let (rpcUrl, setRpcUrl) = React.useState(() => "https://eth.llamarpc.com")
   let (_, setLocalRpc) = LocalStorageHooks.useLocalRpcStorage()
@@ -92,9 +92,7 @@ let make = () => {
         text="HyperSync"
         onClick={_ => {
           let strDataSource = DataSource.dataSourceToString(DataSource.HyperSync)
-          Js.log(strDataSource)
-          Js.log(strDataSource)
-          setDataSource(strDataSource) // todo
+          setDataSource(strDataSource)
           setSelectedDataSource(_ => HyperSync)
         }}
         isActive={selectedDataSource == HyperSync}
@@ -102,8 +100,6 @@ let make = () => {
       <Buttons
         text="RPC URL"
         onClick={_ => {
-          "DataSource.dataSourceToString(DataSource.Rpc)"->Js.log
-          DataSource.dataSourceToString(DataSource.Rpc)->Js.log
           setDataSource(DataSource.dataSourceToString(DataSource.Rpc))
           setSelectedDataSource(_ => Rpc)
         }}
