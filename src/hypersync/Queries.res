@@ -116,6 +116,34 @@ module Blocks = {
 }
 
 module Transaction = {
+  let allTransactionFields: array<HyperSyncJsonApi.QueryTypes.transactionFieldOptions> = [
+    BlockHash,
+    BlockNumber,
+    From,
+    Gas,
+    GasPrice,
+    Hash,
+    Input,
+    Nonce,
+    To,
+    TransactionIndex,
+    Value,
+    V,
+    R,
+    S,
+    MaxPriorityFeePerGas,
+    MaxFeePerGas,
+    ChainId,
+    CumulativeGasUsed,
+    EffectiveGasPrice,
+    GasUsed,
+    ContractAddress,
+    LogsBloom,
+    Type,
+    Root,
+    Status,
+    Sighash,
+  ]
   /*
 Transaction Hash:
 0x8a1b3dbe6301650442bfa765d4de23775fc9a4ec4329ebb5995ec7f1e3777dc4 
@@ -225,6 +253,86 @@ Gas Price:
     ) {
     | Ok(v) => Ok(v.result)
     | Error(exn) => Error(exn)
+    }
+  }
+
+  type direction = From | To
+  let getTransactionsByAddress = async (~serverUrl, ~address, ~direction) => {
+    let transactionParams: HyperSyncJsonApi.QueryTypes.transactionParams = switch direction {
+    | From => {from: [address]}
+    | To => {to: [address]}
+    }
+
+    let postQueryBody: HyperSyncJsonApi.QueryTypes.postQueryBody = {
+      fromBlock: 0,
+      transactions: [transactionParams],
+      fieldSelection: {
+        transaction: allTransactionFields,
+      },
+    }
+
+    let toBigInt = BigInt.fromInt
+
+    switch await HyperSyncJsonApi.executeHyperSyncQuery(~serverUrl, ~postQueryBody) {
+    | Ok(res) =>
+      res.data->Array.flatMap(res => {
+        switch res {
+        | {transactions} =>
+          transactions->Array.map(tx => {
+            switch tx {
+            | {
+                blockNumber,
+                blockHash,
+                gas,
+                gasPrice,
+                from,
+                to,
+                hash,
+                input,
+                nonce,
+                v,
+                r,
+                s,
+                transactionIndex,
+                value,
+              } =>
+              (
+                {
+                  blockNumber: blockNumber->toBigInt,
+                  blockHash,
+                  gas,
+                  gasPrice,
+                  from,
+                  to,
+                  hash,
+                  input,
+                  nonce,
+                  v,
+                  r,
+                  s,
+                  transactionIndex: transactionIndex->toBigInt,
+                  value,
+                  maxPriorityFeePerGas: None,
+                  maxFeePerGas: None,
+                }: transaction
+              )
+
+            | block =>
+              Js.log(
+                block
+                ->Obj.magic
+                ->Js.Dict.entries
+                ->Belt.Array.keepMap(((k, v)) => v->Option.isSome ? Some(k) : None),
+              )
+              Js.Exn.raiseError("Missing fields in transactions response")
+            }
+          })
+        | _res => Js.Exn.raiseError("'transactions' was not found in response")
+        }
+      })
+    | Error(err) =>
+      Console.log2("Query failure:", err)
+      Js.Exn.raiseError("Failed blocks query")
     }
   }
 }
