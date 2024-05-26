@@ -4,7 +4,9 @@ module BlockRow = {
     let {number: blockNumber, timestamp: blockTimestamp} = blockData
     <tr className=rowStyle>
       <td className="py-1 px-3 text-left">
-        <HyperLink href="#block_placeholder"> {blockNumber->React.int} </HyperLink>
+        <HyperLink.Page page={BlockPage({chainId, blockNumber})}>
+          {blockNumber->React.int}
+        </HyperLink.Page>
       </td>
       <td className="py-1 px-3 text-left">
         {(blockTimestamp->BigInt.toFloat *. 1000.)

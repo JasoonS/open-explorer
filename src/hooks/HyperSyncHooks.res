@@ -120,3 +120,47 @@ let useTransaction = (~chainId, ~txHash, ~rpcUrl) => {
 
   tx
 }
+
+/*Ordered by most recent*/
+let useAddressTransactions = (~chainId, ~address, ~direction) => {
+  let (txs, setTxs) = React.useState(_ => Loading)
+
+  React.useEffect3(() => {
+    let serverUrl = getServerUrl(~chainId)
+    Queries.Transaction.getTransactionsByAddress(
+      ~serverUrl=getServerUrl(~chainId=1),
+      ~address,
+      ~direction,
+    )
+    ->Promise.thenResolve(res => {
+      let txsRev = res->Array.toReversed
+      setTxs(_ => Data(txsRev))
+    })
+    ->Promise.catch(exn => {
+      Console.error(exn)
+
+      setTxs(
+        prev =>
+          switch prev {
+          | Data(txs) => Data(txs)
+          | _ => Err(exn)
+          },
+      )
+
+      Promise.resolve()
+    })
+    ->ignore
+
+    None
+  }, (chainId, address, direction))
+
+  // let getServerUrl = (~chainId) => `https://${chainId->Int.toString}.hypersync.xyz`
+  // let res = await Transaction.getTransactionsByAddress(
+  //   ~serverUrl=getServerUrl(~chainId=1),
+  //   ~address="0x95222290DD7278Aa3Ddd389Cc1E1d165CC4BAfe5"->Viem.Address.fromStringUnsafe,
+  //   ~direction=To,
+  // )
+  //
+  // Js.log(res)
+  txs
+}

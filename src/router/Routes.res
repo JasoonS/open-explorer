@@ -16,6 +16,11 @@ type page =
   | TestPage({text: string})
   | Error(string)
 
+let coerceStringUnsafe: 'a => string = v => Obj.magic(v)
+let routeChain = (~chainId) => `/${chainId->Int.toString}`
+let joinPagePath = (~chainId, pageName, pathArg) =>
+  routeChain(~chainId) ++ `/${pageName}/${pathArg->coerceStringUnsafe}`
+
 let pageToUrlString = (pageInfo: page): string => {
   switch pageInfo {
   | Address({chainId, address, addressSubPage}) =>
@@ -27,7 +32,11 @@ let pageToUrlString = (pageInfo: page): string => {
     | Contract => "#code"
     }
     base ++ hash
-  | _placeholder => "/placeholder"
+  | TransactionPage({chainId, txHash}) => joinPagePath(~chainId, "tx", txHash)
+  | BlockPage({chainId, blockNumber}) => joinPagePath(~chainId, "block", blockNumber)
+  | BlocksPage({chainId}) | Search({chainId}) => routeChain(~chainId)
+  | ChainSelect => "/"
+  | Error(_) | Unknown => "/placeholder"
   }
 }
 
