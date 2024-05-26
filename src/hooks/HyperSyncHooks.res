@@ -59,7 +59,6 @@ let useBlocks = (~chainId, ~chainHeight, ~pageSize=20, ~pageIndex=0) => {
     let serverUrl = getServerUrl(~chainId)
     let toBlock = chainHeight - pageSize * pageIndex
     let fromBlock = toBlock - pageSize + 1
-    setIsLoading(_ => true)
     Queries.Blocks.getBlocks(~serverUrl, ~fromBlock, ~toBlock)
     ->Promise.thenResolve(res => {
       setBlocks(_ => Data(res->Array.toReversed))
