@@ -8,9 +8,13 @@ type transaction = {
 
 module TransactionRow = {
   @react.component
-  let make = (~tx: transaction, ~rowStyle: string, ~symbol) => {
+  let make = (~tx: transaction, ~rowStyle: string, ~symbol, ~chainId) => {
     <tr className=rowStyle>
-      <td className="py-1 px-3 text-left"> {tx.hash->React.string} </td>
+      <td className="py-1 px-3 text-left">
+        <HyperLink.Page page={TransactionPage({chainId, txHash: tx.hash})}>
+          {tx.hash->React.string}
+        </HyperLink.Page>
+      </td>
       <td className="py-1 px-3 text-left"> {tx.from->React.string} </td>
       <td className="py-1 px-3 text-left"> {tx.to->React.string} </td>
       /// TODO: rather do a base 18 big int conversion here.
@@ -196,7 +200,7 @@ module InfoTabs = {
         </button>
       </div>
       {switch addressSubPage {
-      | Transactions => <Transactions transactions symbolForAll="ETH" />
+      | Transactions => <Transactions chainId transactions symbolForAll="ETH" />
       | Contract =>
         if isContract {
           <Contract chainId address />
@@ -204,7 +208,7 @@ module InfoTabs = {
           pushSubPage(Transactions)
           React.null
         }
-      | Erc20Transactions => <Transactions transactions=erc20Transfers />
+      | Erc20Transactions => <Transactions chainId transactions=erc20Transfers />
       | _ => React.null
       }}
     </>
