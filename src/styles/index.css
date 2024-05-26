@@ -20,7 +20,8 @@ body {
       rgba(0, 0, 9, 6),
       rgba(0, 0, 1, 0.4)
     ),
-    url("images/bg.webp") no-repeat center center fixed;
+    url("https://media-float-capital.fra1.cdn.digitaloceanspaces.com/bg.jpg")
+      no-repeat center center fixed;
   background-size: cover;
   margin: 0;
   padding: 0;
