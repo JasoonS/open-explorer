@@ -9,7 +9,7 @@ type page =
   | ChainSelect
   | Search({chainId: int})
   | BlocksPage({chainId: int})
-  | Block({chainId: int, blockNumber: int})
+  | BlockPage({chainId: int, blockNumber: int})
   | Address({chainId: int, address: Viem.Address.t, addressSubPage: addressSubPage})
   | TransactionPage({chainId: int, txHash: string})
   | Unknown
@@ -55,6 +55,11 @@ let usePage = () => {
         switch Viem.Address.fromString(address) {
         | Ok(address) => Address({chainId, address, addressSubPage: subView})
         | Error(_) => Error("The address is invalid")
+        }
+      | list{"block", blockNumberStr} =>
+        switch blockNumberStr->Int.fromString {
+        | Some(blockNumber) => BlockPage({chainId, blockNumber})
+        | None =>Error("The block number is invalid, it must be an integer")
         }
       | list{} => BlocksPage({chainId: chainId})
       | _ => Unknown
