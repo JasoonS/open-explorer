@@ -85,11 +85,11 @@ let useBlocks = (~chainId, ~chainHeight, ~pageSize=20, ~pageIndex=0) => {
   (blocks, isLoading)
 }
 
-let useTransaction = (~chainId, ~txHash) => {
+let useTransaction = (~chainId, ~txHash, ~rpcUrl) => {
   let (tx, setTx) = React.useState(_ => Loading)
 
   React.useEffect2(() => {
-    Queries.Transaction.getTransaction(~chainId, ~txHash)
+    Queries.Transaction.getTransaction(~chainId, ~txHash, ~rpcUrl)
     ->Promise.thenResolve(res => {
       switch res {
       | Ok(txData) => setTx(_ => Data(txData))

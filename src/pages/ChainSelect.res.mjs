@@ -4,8 +4,10 @@ import * as Time from "../components/Time.res.mjs";
 import * as React from "react";
 import * as Buttons from "../components/Buttons.res.mjs";
 import * as Js_dict from "rescript/lib/es6/js_dict.js";
+import * as DataSource from "../types/DataSource.res.mjs";
 import * as Caml_option from "rescript/lib/es6/caml_option.js";
 import * as Core__Option from "@rescript/core/src/Core__Option.res.mjs";
+import * as LocalStorageHooks from "../hooks/LocalStorageHooks.res.mjs";
 import * as JsxRuntime from "react/jsx-runtime";
 import * as RescriptReactRouter from "@rescript/react/src/RescriptReactRouter.res.mjs";
 
@@ -66,7 +68,7 @@ var supportedChains = {
 
 function ChainSelect(props) {
   var match = React.useState(function () {
-        return "HyperSync";
+        return "Rpc";
       });
   var setSelectedDataSource = match[1];
   var selectedDataSource = match[0];
@@ -76,9 +78,17 @@ function ChainSelect(props) {
   var setSelectedChain = match$1[1];
   var selectedChain = match$1[0];
   var match$2 = React.useState(function () {
-        return "";
+        return "https://eth.llamarpc.com";
       });
   var setRpcUrl = match$2[1];
+  var rpcUrl = match$2[0];
+  var match$3 = LocalStorageHooks.useLocalRpcStorage();
+  var setLocalRpc = match$3[1];
+  var match$4 = LocalStorageHooks.useDataSourceStorage();
+  var setDataSource = match$4[1];
+  React.useEffect((function () {
+          setLocalRpc("");
+        }), []);
   var tmp;
   switch (selectedDataSource) {
     case "Rpc" :
@@ -88,9 +98,11 @@ function ChainSelect(props) {
                       className: "mt-1 block px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm flex-1",
                       placeholder: "enter custom RPC URL",
                       type: "text",
-                      value: match$2[0],
+                      value: rpcUrl,
                       onChange: (function (e) {
-                          setRpcUrl(e.target.value);
+                          var rpcSet = e.target.value;
+                          setLocalRpc(rpcSet);
+                          setRpcUrl(rpcSet);
                         })
                     }),
                 JsxRuntime.jsx("input", {
@@ -106,6 +118,8 @@ function ChainSelect(props) {
                       children: "submit",
                       className: "ml-4 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm",
                       onClick: (function (param) {
+                          setDataSource(DataSource.dataSourceToString("Rpc"));
+                          setLocalRpc(rpcUrl);
                           RescriptReactRouter.push("/" + selectedChain);
                         })
                     })
@@ -167,6 +181,10 @@ function ChainSelect(props) {
                         JsxRuntime.jsx(Buttons.make, {
                               text: "HyperSync",
                               onClick: (function () {
+                                  var strDataSource = DataSource.dataSourceToString("HyperSync");
+                                  console.log(strDataSource);
+                                  console.log(strDataSource);
+                                  setDataSource(strDataSource);
                                   setSelectedDataSource(function (param) {
                                         return "HyperSync";
                                       });
@@ -176,6 +194,9 @@ function ChainSelect(props) {
                         JsxRuntime.jsx(Buttons.make, {
                               text: "RPC URL",
                               onClick: (function () {
+                                  console.log("DataSource.dataSourceToString(DataSource.Rpc)");
+                                  console.log(DataSource.dataSourceToString("Rpc"));
+                                  setDataSource(DataSource.dataSourceToString("Rpc"));
                                   setSelectedDataSource(function (param) {
                                         return "Rpc";
                                       });
