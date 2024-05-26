@@ -1,46 +1,12 @@
-type transaction = {
-  hash: string,
-  from: string,
-  to: string,
-  value: string, // This should be a BigInt and decimals should be a separete field.
-  timestamp: string,
-}
-
-type transactionRequest = Loading | Data(Queries.Transaction.transaction) | Error(string)
-
 module TransactionDetailsH = {
   @react.component
   let make = (~chainId: int, ~txHash) => {
-    let (transactionInfo, setTransactionInfo) = React.useState(() => Loading)
     let (rpcUrl, _) = LocalStorageHooks.useLocalRpcStorage()
-
-    React.useEffect3(() => {
-      Queries.Transaction.getTransaction(~chainId, ~txHash, ~rpcUrl)
-      ->Promise.then(transactionInfo => {
-        switch transactionInfo {
-        | Ok(transaction) => setTransactionInfo(_ => Data(transaction))
-        | Error(err) => setTransactionInfo(_ => Error("Error fetching transaction"))
-        }
-        Promise.resolve()
-      })
-      ->Promise.catch(exn => {
-        Console.error(exn)
-        setTransactionInfo(_ => Error("Error fetching transaction"))
-        Promise.resolve()
-      })
-      ->ignore
-      None
-    }, (chainId, txHash, rpcUrl))
+    let transactionInfo = HyperSyncHooks.useTransaction(~chainId, ~txHash, ~rpcUrl)
 
     switch transactionInfo {
     | Loading => <Loader.Pepe />
-    | Error(err) => {
-        Console.log("Error fetching transaction display")
-        <div>
-          <p> {React.string("err")} </p>
-          <p> {React.string(err)} </p>
-        </div>
-      }
+    | Err(_err) => <div> {React.string("Error fetching transaction")} </div>
     | Data(transactionInfo) =>
       <div className="max-w-screen">
         <p> {React.string("Transaction details")} </p>
