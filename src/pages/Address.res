@@ -23,30 +23,37 @@ module TransactionRow = {
 module Transactions = {
   @react.component
   let make = (~transactions: array<transaction>, ~symbolForAll: option<string>=?) => {
-    <table
-      className="text-white border rounded border-2 border-primary p-2 m-2 bg-black bg-opacity-30">
-      <thead className="m-10 uppercase bg-black">
-        <tr>
-          <th className="py-3 px-6 text-left"> {"Hash"->React.string} </th>
-          <th className="py-3 px-6 text-left"> {"From"->React.string} </th>
-          <th className="py-3 px-6 text-left"> {"To"->React.string} </th>
-          <th className="py-3 px-6 text-left"> {"Value"->React.string} </th>
-          <th className="py-3 px-6 text-left"> {"Timestamp"->React.string} </th>
-        </tr>
-      </thead>
-      <tbody>
-        {transactions
-        ->Array.mapWithIndex((tx, index) =>
-          <TransactionRow
-            symbol={symbolForAll->Option.getOr("")}
-            key=tx.hash
-            tx
-            rowStyle={index->Int.mod(2) == 0 ? "bg-white bg-opacity-10" : ""}
-          />
-        )
-        ->React.array}
-      </tbody>
-    </table>
+    <dev>
+      <p className="text-xs">
+        {"For a summary of activity this address try the "->React.string}
+        <HyperLink href="https://chaindensity.xyz"> {"ChainDensity"->React.string} </HyperLink>
+        {" tool."->React.string}
+      </p>
+      <table
+        className="text-white border rounded border-2 border-primary p-2 m-2 bg-black bg-opacity-30">
+        <thead className="m-10 uppercase bg-black">
+          <tr>
+            <th className="py-3 px-6 text-left"> {"Hash"->React.string} </th>
+            <th className="py-3 px-6 text-left"> {"From"->React.string} </th>
+            <th className="py-3 px-6 text-left"> {"To"->React.string} </th>
+            <th className="py-3 px-6 text-left"> {"Value"->React.string} </th>
+            <th className="py-3 px-6 text-left"> {"Timestamp"->React.string} </th>
+          </tr>
+        </thead>
+        <tbody>
+          {transactions
+          ->Array.mapWithIndex((tx, index) =>
+            <TransactionRow
+              symbol={symbolForAll->Option.getOr("")}
+              key=tx.hash
+              tx
+              rowStyle={index->Int.mod(2) == 0 ? "bg-white bg-opacity-10" : ""}
+            />
+          )
+          ->React.array}
+        </tbody>
+      </table>
+    </dev>
   }
 }
 
