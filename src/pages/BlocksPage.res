@@ -1,10 +1,19 @@
 module BlockRow = {
   @react.component
   let make = (~blockData: Queries.Blocks.blockData, ~rowStyle: string, ~chainId: int) => {
+    let url = RescriptReactRouter.useUrl()
+
     let {number: blockNumber, timestamp: blockTimestamp} = blockData
     <tr className=rowStyle>
-      <td className="py-1 px-3 text-left">
-        <HyperLink href="#block_placeholder"> {blockNumber->React.int} </HyperLink>
+      <td
+        className="py-1 px-3 text-left text-primary hover:underscore cursor-pointer"
+        onClick={_ =>
+          RescriptReactRouter.push(
+            `/${url.path
+              ->List.head
+              ->Option.getOr("unknown")}/block/${blockNumber->Int.toString}`,
+          )}>
+        {blockNumber->React.int}
       </td>
       <td className="py-1 px-3 text-left">
         {(blockTimestamp->BigInt.toFloat *. 1000.)
